@@ -1,28 +1,29 @@
 import React from 'react';
-import KeyIcon from './../assets/key_icon.svg'
+import LockIcon from './../assets/lock.svg'
 import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
-import { FormType } from './FormType';
+import { FormType } from './FormType'
 import {
     AuthForm,
     FormTitle,
     AuthInput,
+    FormText,
+    RedirectButton,
     PasswordContainer,
     ShowPaswordButton,
-    FormButton,
-    FormText,
-    RedirectButton
-} from '../elements/styledElements';
+    FormButton
+} from '../elements/styledElements'
 
 interface IProps extends React.PropsWithChildren {
     setForm: React.Dispatch<React.SetStateAction<'signin' | 'signup'>>
 }
 
-export const LoginForm: React.FC<IProps> = ({ setForm }) => {
+export const Registration: React.FC<IProps> = ({ setForm }) => {
     const [isOpened, setIsOpened] = React.useState<boolean>(false);
+
     return <AuthForm
         initial={{
-            x: -200,
+            x: 300,
             opacity: 0
         }}
         animate={{
@@ -31,13 +32,20 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
         }}
         exit={{
             x: -200,
-            opacity: 0
+            opacity: 1
         }}
     >
         <FormType
-            keyIcon={KeyIcon}
+            keyIcon={LockIcon}
         />
-        <FormTitle>Log in</FormTitle>
+        <FormTitle>
+            Create an account
+        </FormTitle>
+
+        <AuthInput
+            type='text'
+            placeholder='Full name'
+        />
         <AuthInput
             type='email'
             placeholder='Email'
@@ -58,10 +66,29 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
                 }
             </ShowPaswordButton>
         </PasswordContainer>
-        <FormButton>Sign in</FormButton>
+        <PasswordContainer>
+            <AuthInput
+                type={isOpened ? 'text' : 'password'}
+                placeholder='Confirm pasword'
+            />
+            <ShowPaswordButton
+                type='button'
+                onClick={() => setIsOpened(prev => !prev)}
+            >
+                {
+                    isOpened ?
+                        <img src={eyeOpened} alt="Opened eye" /> :
+                        <img src={eyeClosed} alt="Closed eye" />
+                }
+            </ShowPaswordButton>
+        </PasswordContainer>
+        <FormButton>
+            Let's go!
+        </FormButton>
         <FormText>
-            Don't have a account? <RedirectButton
-                onClick={() => setForm(() => 'signup')}
-            >Create an account</RedirectButton></FormText>
+            Already have an account? <RedirectButton
+                onClick={() => setForm(() => 'signin')}
+            >Log in</RedirectButton>
+        </FormText>
     </AuthForm>
 }
