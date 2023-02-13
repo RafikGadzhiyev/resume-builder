@@ -37,7 +37,7 @@ export const AuthInput = styled.input`
     min-width: 360px;
     box-sizing: border-box;
     transition: 300ms ease;
-    color: #0FFF13;
+    color: #fff;
 
 
     &:hover {
@@ -45,7 +45,7 @@ export const AuthInput = styled.input`
     }
 
     &:focus {
-        box-shadow: 0 0 0 2px #0FFF13;
+        box-shadow: 0 0 0 2px rgb(15 255 19 / .5);
     }
 
 

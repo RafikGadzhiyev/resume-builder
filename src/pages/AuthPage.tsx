@@ -3,7 +3,6 @@ import { GoogleLogin } from '@react-oauth/google';
 import styled from '@emotion/styled'
 import { AnimatePresence } from 'framer-motion';
 import { LoginForm } from '../components/Login';
-import { motion } from 'framer-motion'
 import { Registration } from '../components/SignUp';
 
 const AuthContainer = styled.div`
@@ -45,7 +44,7 @@ export const Auth = () => {
 
     const checkUserToken = React.useCallback((token: string) => {
         fetch(
-            BASE_URL + '/oauth/google',
+            BASE_URL + '/auth/google',
             {
                 credentials: 'include',
                 headers: {
@@ -55,14 +54,14 @@ export const Auth = () => {
         );
     }, [])
 
-    React.useEffect(() => {
-        if (br.current) {
-            br.current = false;
-            fetch(BASE_URL + '/token/refresh', {
-                credentials: 'include'
-            })
-        }
-    }, [])
+    // React.useEffect(() => {
+    //     if (br.current) {
+    //         br.current = false;
+    //         fetch(BASE_URL + '/token/refresh', {
+    //             credentials: 'include'
+    //         })
+    //     }
+    // }, [])
 
     return <AuthContainer>
         <AuthWrapper>

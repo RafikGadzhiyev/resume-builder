@@ -1,5 +1,5 @@
 import React from 'react';
-import LockIcon from './../assets/lock.svg'
+import LockIcon from './../assets/icons/lock.svg'
 import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
 import { FormType } from './FormType'

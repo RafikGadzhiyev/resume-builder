@@ -1,8 +1,10 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import { Global, css } from '@emotion/react'
-import ManropeFont from './assets/Manrope-VariableFont_wght.ttf';
+import ManropeFont from './assets/fonts/Manrope-VariableFont_wght.ttf';
+import { store } from './state/store'
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -33,6 +35,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         }
       `}
     />
-    <App />
+    <Provider
+      store={store}
+    >
+      <App />
+    </Provider>
   </React.StrictMode>,
 )

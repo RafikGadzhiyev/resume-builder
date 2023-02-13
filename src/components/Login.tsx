@@ -1,5 +1,6 @@
 import React from 'react';
-import KeyIcon from './../assets/key_icon.svg'
+import { useDispatch } from 'react-redux';
+import KeyIcon from './../assets/icons/key_icon.svg'
 import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
 import { FormType } from './FormType';
@@ -13,12 +14,15 @@ import {
     FormText,
     RedirectButton
 } from '../elements/styledElements';
+import { AuthUser } from '../state/slices/auth.slice';
+import { AppDispatch } from '../state/store';
 
 interface IProps extends React.PropsWithChildren {
     setForm: React.Dispatch<React.SetStateAction<'signin' | 'signup'>>
 }
 
 export const LoginForm: React.FC<IProps> = ({ setForm }) => {
+    const dispatch = useDispatch<AppDispatch>();
     const [isOpened, setIsOpened] = React.useState<boolean>(false);
     return <AuthForm
         initial={{
@@ -58,7 +62,15 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
                 }
             </ShowPaswordButton>
         </PasswordContainer>
-        <FormButton>Sign in</FormButton>
+        <FormButton
+            onClick={(e) => {
+                e.preventDefault();
+                dispatch(AuthUser({
+                    email: '',
+                    password: ''
+                }))
+            }}
+        >Sign in</FormButton>
         <FormText>
             Don't have a account? <RedirectButton
                 onClick={() => setForm(() => 'signup')}
