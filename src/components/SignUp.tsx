@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
 import LockIcon from './../assets/icons/lock.svg'
 import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
@@ -13,6 +15,9 @@ import {
     ShowPaswordButton,
     FormButton
 } from '../elements/styledElements'
+import { AppDispatch, RootState } from '../state/store';
+import { SignupUser } from '../state/slices/auth.slice';
+import { FormInput } from './FormInput';
 
 interface IProps extends React.PropsWithChildren {
     setForm: React.Dispatch<React.SetStateAction<'signin' | 'signup'>>
@@ -20,8 +25,53 @@ interface IProps extends React.PropsWithChildren {
 
 export const Registration: React.FC<IProps> = ({ setForm }) => {
     const [isOpened, setIsOpened] = React.useState<boolean>(false);
+    const [errors, setErrors] = React.useState<Array<1 | 0>>([1, 1, 1]);
+    const FormRef = React.useRef<HTMLFormElement | null>(null);
+    const userData = useSelector((store: RootState) => store.authReducer.user);
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+
+    const createProfile = () => {
+        if (FormRef.current) {
+            const MIN_PASSWORD_LENGTH = 6;
+            const validation: Array<1 | 0> = [1, 1, 1];
+            let haveZero = false;
+            const elements = FormRef.current;
+            const full_name: HTMLInputElement = elements['full_name'];
+            const email: HTMLInputElement = elements['email'];
+            const password: HTMLInputElement = elements['password'];
+            const confirm_password: HTMLInputElement = elements['confirm_password'];
+            if (password.value !== confirm_password.value || password.value.length < MIN_PASSWORD_LENGTH || confirm_password.value.length < MIN_PASSWORD_LENGTH) {
+                validation[2] = 0;
+                haveZero = true;
+            }
+            if (full_name.value.trim().split(/\s+/gi).length < 2) {
+                validation[0] = 0;
+                haveZero = true;
+            }
+            if ((/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(email.value.trim()) === false) {
+                validation[1] = 0;
+                haveZero = true;
+            }
+            setErrors(() => validation);
+            if (haveZero === false) {
+                dispatch(SignupUser({
+                    email: email.value,
+                    fullname: full_name.value,
+                    password: password.value
+                }))
+            }
+        }
+    }
+
+    React.useEffect(() => {
+        if (userData) {
+            navigate('/verification/' + userData.id);
+        }
+    }, [userData])
 
     return <AuthForm
+        ref={FormRef}
         initial={{
             x: 300,
             opacity: 0
@@ -42,47 +92,74 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             Create an account
         </FormTitle>
 
-        <AuthInput
-            type='text'
-            placeholder='Full name'
-        />
-        <AuthInput
-            type='email'
-            placeholder='Email'
-        />
-        <PasswordContainer>
+        <FormInput
+            isValid={errors[0]}
+            message={'Please, enter your fullname!'}
+        >
             <AuthInput
-                type={isOpened ? 'text' : 'password'}
-                placeholder='Password'
+                type='text'
+                placeholder='Full name'
+                name='full_name'
             />
-            <ShowPaswordButton
-                type='button'
-                onClick={() => setIsOpened(prev => !prev)}
-            >
-                {
-                    isOpened ?
-                        <img src={eyeOpened} alt="Opened eye" /> :
-                        <img src={eyeClosed} alt="Closed eye" />
-                }
-            </ShowPaswordButton>
-        </PasswordContainer>
-        <PasswordContainer>
+        </FormInput>
+        <FormInput
+            isValid={errors[1]}
+            message={'This email is invalid!'}
+        >
             <AuthInput
-                type={isOpened ? 'text' : 'password'}
-                placeholder='Confirm pasword'
+                type='email'
+                placeholder='Email'
+                name='email'
             />
-            <ShowPaswordButton
-                type='button'
-                onClick={() => setIsOpened(prev => !prev)}
-            >
-                {
-                    isOpened ?
-                        <img src={eyeOpened} alt="Opened eye" /> :
-                        <img src={eyeClosed} alt="Closed eye" />
-                }
-            </ShowPaswordButton>
-        </PasswordContainer>
-        <FormButton>
+        </FormInput>
+        <FormInput
+            isValid={errors[2]}
+            message={`Different passwords, length or short password!`}
+        >
+
+            <PasswordContainer>
+                <AuthInput
+                    type={isOpened ? 'text' : 'password'}
+                    placeholder='Password'
+                    name='password'
+                />
+                <ShowPaswordButton
+                    type='button'
+                    onClick={() => setIsOpened(prev => !prev)}
+                >
+                    {
+                        isOpened ?
+                            <img src={eyeOpened} alt="Opened eye" /> :
+                            <img src={eyeClosed} alt="Closed eye" />
+                    }
+                </ShowPaswordButton>
+            </PasswordContainer>
+            <PasswordContainer>
+                <AuthInput
+                    type={isOpened ? 'text' : 'password'}
+                    placeholder='Confirm pasword'
+                    name='confirm_password'
+                />
+                <ShowPaswordButton
+                    type='button'
+                    onClick={() => setIsOpened(prev => !prev)}
+                >
+                    {
+                        isOpened ?
+                            <img src={eyeOpened} alt="Opened eye" /> :
+                            <img src={eyeClosed} alt="Closed eye" />
+                    }
+                </ShowPaswordButton>
+            </PasswordContainer>
+        </FormInput>
+
+
+        <FormButton
+            onClick={(e) => {
+                e.preventDefault();
+                createProfile()
+            }}
+        >
             Let's go!
         </FormButton>
         <FormText>

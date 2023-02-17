@@ -1,9 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import styled from '@emotion/styled'
 import { AnimatePresence } from 'framer-motion';
 import { LoginForm } from '../components/Login';
 import { Registration } from '../components/SignUp';
+import type { RootState } from '../state/store';
+import { Loading } from '../components/Loading';
+import { Forms } from '../types';
 
 const AuthContainer = styled.div`
     width: 100%;
@@ -22,10 +26,11 @@ const AuthWrapper = styled.div`
     border-radius: 2rem;
     background-color: #262626;
     overflow: hidden;
-    `
+    position:relative;
+`
 
 const FormsContainer = styled.div`
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
 `
 
 const ExternalAuthsContainer = styled.div`
@@ -37,8 +42,10 @@ const ExternalAuthsContainer = styled.div`
     position: relative;
 `;
 
+
 export const Auth = () => {
-    const [currentForm, setCurrentForm] = React.useState<'signin' | 'signup'>('signin');
+    const [currentForm, setCurrentForm] = React.useState<Forms>('signin');
+    const loadingState = useSelector((store: RootState) => store.authReducer.isLoading);
     const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
     const br = React.useRef<boolean>(true);
 
@@ -65,6 +72,12 @@ export const Auth = () => {
 
     return <AuthContainer>
         <AuthWrapper>
+            {
+                loadingState && <Loading
+                    currentForm={currentForm}
+                />
+
+            }
             <FormsContainer>
                 <AnimatePresence>
                     {

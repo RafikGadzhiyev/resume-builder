@@ -23,8 +23,11 @@ interface IProps extends React.PropsWithChildren {
 
 export const LoginForm: React.FC<IProps> = ({ setForm }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const FormRef = React.useRef<HTMLFormElement | null>(null);
     const [isOpened, setIsOpened] = React.useState<boolean>(false);
+
     return <AuthForm
+        ref={FormRef}
         initial={{
             x: -200,
             opacity: 0

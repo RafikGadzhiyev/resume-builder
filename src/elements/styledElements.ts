@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 export const AuthForm = styled(motion.form)`
     display: flex;
     flex-direction: column;
-    gap: .5rem;
     align-items: center;
     align-items: stretch;
     gap: 1rem;
@@ -38,7 +37,7 @@ export const AuthInput = styled.input`
     box-sizing: border-box;
     transition: 300ms ease;
     color: #fff;
-
+    margin-bottom: .4rem;
 
     &:hover {
         box-shadow: 0 0 0 2px rgb(15 255 19 / .25)
@@ -62,13 +61,16 @@ export const FormTitle = styled.h2`
 
 export const PasswordContainer = styled.div`
     position: relative;
+    &:not(:last-of-type){
+        margin-bottom: .8rem;
+    }
 `;
 export const ShowPaswordButton = styled.button`
     all: unset;
     right: 1.5rem;
     top: 50%;
     position: absolute;
-    transform: translate(100%, -50%);
+    transform: translate(100%, -60%);
     cursor: pointer;
 `;
 
