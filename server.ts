@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser';
 
 // routes
 import OauthRouter from './routes/oauth.routes';
-import TokenRouter from './routes/token.routes'
+import TokenRouter from './routes/token.routes';
+import VerificationRouter from './routes/verification.routes';
 
 dotenv.config();
 
@@ -22,7 +23,8 @@ app.use(urlencoded({ extended: false }))
 
 //routes
 app.use('/auth', OauthRouter);
-app.use('/token', TokenRouter)
+app.use('/token', TokenRouter);
+app.use('/verification', VerificationRouter)
 
 app.listen(PORT, () => {
     console.log("Server is listening on " + PORT + ' port');

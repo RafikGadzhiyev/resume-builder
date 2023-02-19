@@ -68,9 +68,6 @@ router.post('/login', async (req, res) => {
         password
     } = req.body;
 
-    // console.log(
-    //     `${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`
-    // )
     const check_user = await axios.get(
         `${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`
     )
@@ -92,6 +89,7 @@ router.post('/login', async (req, res) => {
         id: user._id,
         age: user.age,
         full_name: user.first_name + ' ' + user.last_name,
+        email
     })
 })
 

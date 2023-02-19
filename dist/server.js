@@ -33,6 +33,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // routes
 const oauth_routes_1 = __importDefault(require("./routes/oauth.routes"));
 const token_routes_1 = __importDefault(require("./routes/token.routes"));
+const verification_routes_1 = __importDefault(require("./routes/verification.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || '3001';
@@ -46,6 +47,7 @@ app.use((0, express_1.urlencoded)({ extended: false }));
 //routes
 app.use('/auth', oauth_routes_1.default);
 app.use('/token', token_routes_1.default);
+app.use('/verification', verification_routes_1.default);
 app.listen(PORT, () => {
     console.log("Server is listening on " + PORT + ' port');
 });

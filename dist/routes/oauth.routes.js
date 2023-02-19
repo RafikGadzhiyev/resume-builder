@@ -67,9 +67,6 @@ router.get('/google', (req, res) => {
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(req.body);
     const { email, password } = req.body;
-    // console.log(
-    //     `${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`
-    // )
     const check_user = yield axios_1.default.get(`${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`);
     if (check_user.data.result.length === 0) {
         return res.status(404).send({
@@ -87,6 +84,7 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         id: user._id,
         age: user.age,
         full_name: user.first_name + ' ' + user.last_name,
+        email
     });
 }));
 router.post('/sign_up', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
