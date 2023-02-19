@@ -10,9 +10,10 @@ import {
     AuthInput,
     PasswordContainer,
     ShowPaswordButton,
-    FormButton,
     FormText,
-    RedirectButton
+    RedirectButton,
+    FormTypeIcon,
+    BaseButton
 } from '../elements/styledElements';
 import { AuthUser } from '../state/slices/auth.slice';
 import { AppDispatch, RootState } from '../state/store';
@@ -85,9 +86,11 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
                 open={true}
             />
         }
-        <FormType
-            keyIcon={KeyIcon}
-        />
+        <FormType>
+            <FormTypeIcon
+                src={KeyIcon}
+            />
+        </FormType>
         <FormTitle>Log in</FormTitle>
         <FormInput
             isValid={errors[0]}
@@ -122,12 +125,12 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
                 </ShowPaswordButton>
             </PasswordContainer>
         </FormInput>
-        <FormButton
+        <BaseButton
             onClick={(e) => {
                 e.preventDefault();
                 loginHandler();
             }}
-        >Sign in</FormButton>
+        >Sign in</BaseButton>
         <FormText>
             Don't have a account? <RedirectButton
                 onClick={() => setForm(() => 'signup')}

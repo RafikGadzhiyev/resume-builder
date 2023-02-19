@@ -13,7 +13,8 @@ import {
     RedirectButton,
     PasswordContainer,
     ShowPaswordButton,
-    FormButton
+    BaseButton,
+    FormTypeIcon
 } from '../elements/styledElements'
 import { AppDispatch, RootState } from '../state/store';
 import { SignupUser } from '../state/slices/auth.slice';
@@ -96,9 +97,11 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             opacity: 1
         }}
     >
-        <FormType
-            keyIcon={LockIcon}
-        />
+        <FormType>
+            <FormTypeIcon
+                src={LockIcon}
+            />
+        </FormType>
         <FormTitle>
             Create an account
         </FormTitle>
@@ -165,14 +168,14 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
         </FormInput>
 
 
-        <FormButton
+        <BaseButton
             onClick={(e) => {
                 e.preventDefault();
                 createProfile()
             }}
         >
             Let's go!
-        </FormButton>
+        </BaseButton>
         <FormText>
             Already have an account? <RedirectButton
                 onClick={() => setForm(() => 'signin')}

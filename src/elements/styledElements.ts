@@ -106,7 +106,7 @@ export const RedirectButton = styled.button`
     }
 `;
 
-export const FormButton = styled.button`
+export const BaseButton = styled.button`
     all: unset;
     border-radius: 10px;
     background-color: #0AFF14;
@@ -123,4 +123,29 @@ export const FormButton = styled.button`
         box-shadow: 0 0 10px 2px #0FFF13;
     }
 
+    &:active {
+        box-shadow: none;
+        background-color: #07A70D;
+    }
+
+`;
+export const FormTypeIconContainer = styled.div`
+    display: flex;
+    max-width: 27.5rem;
+    // text-align: center;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.3rem;
+    background-color: rgb(255 255 255 / 0.1);
+    width: fit-content;
+    height: 100px;
+    border-radius: 105px;
+    margin:  auto;
+    transform: matrix(1, -0.14, 0.1, 1, 0, 0);
+`;
+
+export const FormTypeIcon = styled.img`
+width: 100%;
+height: 100%;
 `;
