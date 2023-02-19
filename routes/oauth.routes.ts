@@ -89,12 +89,9 @@ router.post('/login', async (req, res) => {
     }
 
     res.status(200).send({
-        message: "Success Login!",
-        data: {
-            id: user._id,
-            age: user.age,
-            full_name: user.first_name + ' ' + user.last_name,
-        }
+        id: user._id,
+        age: user.age,
+        full_name: user.first_name + ' ' + user.last_name,
     })
 })
 
