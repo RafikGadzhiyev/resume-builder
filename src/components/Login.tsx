@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import KeyIcon from './../assets/icons/key_icon.svg'
 import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
@@ -15,7 +15,11 @@ import {
     RedirectButton
 } from '../elements/styledElements';
 import { AuthUser } from '../state/slices/auth.slice';
-import { AppDispatch } from '../state/store';
+import { AppDispatch, RootState } from '../state/store';
+import { IPasswordConstraints } from '../interfaces/utils.interface';
+import { checkEmail, checkPassword } from '../utils/isValid';
+import { FormInput } from './FormInput';
+import { ErrorSnackBar } from './SnackBars';
 
 interface IProps extends React.PropsWithChildren {
     setForm: React.Dispatch<React.SetStateAction<'signin' | 'signup'>>
@@ -23,8 +27,41 @@ interface IProps extends React.PropsWithChildren {
 
 export const LoginForm: React.FC<IProps> = ({ setForm }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const auth = useSelector((store: RootState) => store.authReducer);
     const FormRef = React.useRef<HTMLFormElement | null>(null);
+    const [errors, setErrors] = React.useState<Array<1 | 0>>([1, 1]);
     const [isOpened, setIsOpened] = React.useState<boolean>(false);
+
+    const loginHandler = () => {
+        if (FormRef.current) {
+            const MIN_PASSWORD_LENGTH = 6;
+            const validation: Array<1 | 0> = [1, 1];
+            let haveZero = false;
+            const elements = FormRef.current;
+            const email: HTMLInputElement = elements['email'];
+            const password: HTMLInputElement = elements['password'];
+            const PASSWORD_CONSTRAINTS: IPasswordConstraints = {
+                atLeastOneUpperCaseLetter: false,
+                atLeastOneDigit: false,
+                atLeastOneSymbol: false
+            }
+            if (checkEmail(email.value.trim(), /^[^\s@]+@[^\s@]+\.[^\s@]+$/) === false) {
+                validation[0] = 0;
+                haveZero = true;
+            }
+            if (checkPassword(password.value, MIN_PASSWORD_LENGTH, PASSWORD_CONSTRAINTS) === false) {
+                validation[1] = 0;
+                haveZero = true;
+            }
+            setErrors(() => validation);
+            if (haveZero === false) {
+                dispatch(AuthUser({
+                    email: email.value,
+                    password: password.value
+                }))
+            }
+        }
+    }
 
     return <AuthForm
         ref={FormRef}
@@ -41,37 +78,54 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
             opacity: 0
         }}
     >
+        {
+            auth.error &&
+            <ErrorSnackBar
+                message={auth.error}
+                open={true}
+            />
+        }
         <FormType
             keyIcon={KeyIcon}
         />
         <FormTitle>Log in</FormTitle>
-        <AuthInput
-            type='email'
-            placeholder='Email'
-        />
-        <PasswordContainer>
+        <FormInput
+            isValid={errors[0]}
+            message={'This email is invalid!'}
+        >
             <AuthInput
-                type={isOpened ? 'text' : 'password'}
-                placeholder='Password'
+                type='email'
+                placeholder='Email'
+                name='email'
             />
-            <ShowPaswordButton
-                type='button'
-                onClick={() => setIsOpened(prev => !prev)}
-            >
-                {
-                    isOpened ?
-                        <img src={eyeOpened} alt="Opened eye" /> :
-                        <img src={eyeClosed} alt="Closed eye" />
-                }
-            </ShowPaswordButton>
-        </PasswordContainer>
+        </FormInput>
+        <FormInput
+            isValid={errors[1]}
+            message={`Incorrect or invalid password!`}
+        >
+
+            <PasswordContainer>
+                <AuthInput
+                    type={isOpened ? 'text' : 'password'}
+                    placeholder='Password'
+                    name='password'
+                />
+                <ShowPaswordButton
+                    type='button'
+                    onClick={() => setIsOpened(prev => !prev)}
+                >
+                    {
+                        isOpened ?
+                            <img src={eyeOpened} alt="Opened eye" /> :
+                            <img src={eyeClosed} alt="Closed eye" />
+                    }
+                </ShowPaswordButton>
+            </PasswordContainer>
+        </FormInput>
         <FormButton
             onClick={(e) => {
                 e.preventDefault();
-                dispatch(AuthUser({
-                    email: '',
-                    password: ''
-                }))
+                loginHandler();
             }}
         >Sign in</FormButton>
         <FormText>

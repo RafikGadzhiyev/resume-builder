@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import styled from '@emotion/styled'
@@ -45,7 +46,9 @@ const ExternalAuthsContainer = styled.div`
 
 export const Auth = () => {
     const [currentForm, setCurrentForm] = React.useState<Forms>('signin');
+    const navigate = useNavigate();
     const loadingState = useSelector((store: RootState) => store.authReducer.isLoading);
+    const userData = useSelector((store: RootState) => store.authReducer.user);
     const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
     const br = React.useRef<boolean>(true);
 
@@ -70,6 +73,12 @@ export const Auth = () => {
     //     }
     // }, [])
 
+    React.useEffect(() => {
+        if (userData) {
+            navigate(`/verification/${userData.id}`)
+        }
+    }, [userData])
+
     return <AuthContainer>
         <AuthWrapper>
             {
@@ -90,7 +99,7 @@ export const Auth = () => {
                             />
                     }
                 </AnimatePresence>
-                <ExternalAuthsContainer>
+                {/* <ExternalAuthsContainer>
                     <GoogleLogin
                         theme='filled_blue'
                         onSuccess={response => {
@@ -100,7 +109,7 @@ export const Auth = () => {
                         onError={() => console.log("Authentification error! Try later!")}
                     />
 
-                </ExternalAuthsContainer>
+                </ExternalAuthsContainer> */}
             </FormsContainer>
         </AuthWrapper>
     </AuthContainer>

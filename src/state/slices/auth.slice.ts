@@ -27,16 +27,27 @@ interface ISignup extends IAuth {
 
 export const AuthUser = createAsyncThunk(
     "user/auth",
-    async (payload: IAuth) => {
-        const response = await fetch(`${SERVER_BASE_URL}/auth/login`, {
-            method: "POST",
-            body: JSON.stringify(payload),
-            headers: {
-                "Content-Type": "application/json"
+    async (payload: IAuth, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${SERVER_BASE_URL}/auth/login`, {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (!response.ok) {
+                throw new Error("Incorrect credentials!")
             }
-        });
-        const data = await response.json();
-        return data;
+            const data = await response.json();
+            return data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+
+            return rejectWithValue(err.response.data);
+        }
     }
 )
 
@@ -84,7 +95,7 @@ const AuthSlice = createSlice({
         ).addCase(
             AuthUser.rejected,
             (state) => {
-                state.error = "Error ocured!";
+                state.error = "Incorrect credentials!";
                 state.isLoading = false;
             }
         ).addCase(

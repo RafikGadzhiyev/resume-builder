@@ -18,6 +18,8 @@ import {
 import { AppDispatch, RootState } from '../state/store';
 import { SignupUser } from '../state/slices/auth.slice';
 import { FormInput } from './FormInput';
+import { checkEmail, checkPassword, checkPasswordSync } from '../utils/isValid';
+import { IPasswordConstraints } from '../interfaces/utils.interface';
 
 interface IProps extends React.PropsWithChildren {
     setForm: React.Dispatch<React.SetStateAction<'signin' | 'signup'>>
@@ -41,15 +43,24 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             const email: HTMLInputElement = elements['email'];
             const password: HTMLInputElement = elements['password'];
             const confirm_password: HTMLInputElement = elements['confirm_password'];
-            if (password.value !== confirm_password.value || password.value.length < MIN_PASSWORD_LENGTH || confirm_password.value.length < MIN_PASSWORD_LENGTH) {
+            const PASSWORD_CONSTRAINTS: IPasswordConstraints = {
+                atLeastOneUpperCaseLetter: false,
+                atLeastOneDigit: false,
+                atLeastOneSymbol: false
+            }
+            if (
+                checkPasswordSync(password.value, confirm_password.value) === false ||
+                checkPassword(password.value, MIN_PASSWORD_LENGTH, PASSWORD_CONSTRAINTS) === false ||
+                checkPassword(confirm_password.value, MIN_PASSWORD_LENGTH, PASSWORD_CONSTRAINTS) === false
+            ) {
                 validation[2] = 0;
                 haveZero = true;
             }
-            if (full_name.value.trim().split(/\s+/gi).length < 2) {
+            if (full_name.value.trim().length === 0) {
                 validation[0] = 0;
                 haveZero = true;
             }
-            if ((/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(email.value.trim()) === false) {
+            if (checkEmail(email.value.trim(), /^[^\s@]+@[^\s@]+\.[^\s@]+$/) === false) {
                 validation[1] = 0;
                 haveZero = true;
             }
@@ -64,11 +75,11 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
         }
     }
 
-    React.useEffect(() => {
-        if (userData) {
-            navigate('/verification/' + userData.id);
-        }
-    }, [userData])
+    // React.useEffect(() => {
+    //     if (userData) {
+    //         navigate('/verification/' + userData.id);
+    //     }
+    // }, [userData])
 
     return <AuthForm
         ref={FormRef}
