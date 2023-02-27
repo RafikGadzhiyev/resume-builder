@@ -23,7 +23,7 @@ const CMS_DATASET = process.env.SANITY_DATASET;
 const CMS_ACCESS_TOKEN = process.env.SANITY_TEST_TOKEN;
 const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD;
 const GMAIL = process.env.GMAIL;
-let verificationCode = (0, generators_utils_1.GenerateVerificationCode)();
+let verificationCode = '';
 const router = (0, express_1.Router)();
 const transport_config = {
     service: "Gmail",
@@ -35,6 +35,7 @@ const transport_config = {
 let transporter = (0, nodemailer_1.createTransport)(transport_config);
 router.get('/send_code/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        verificationCode = (0, generators_utils_1.GenerateVerificationCode)();
         const get_user_email = yield axios_1.default.get(`${CMS_BASE_URL}query/${CMS_DATASET}?query=*[_id == '${req.params.id}']`);
         if (get_user_email.status >= 400) {
             return res.status(get_user_email.status).send({
@@ -73,4 +74,15 @@ router.get('/send_code/:id', (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
     }
 }));
+router.get('/check_code/:code', (req, res) => {
+    let code = req.params.code;
+    if (code !== verificationCode) {
+        return res.status(400).send({
+            message: 'Code is not valid'
+        });
+    }
+    return res.status(200).send({
+        message: "Code is valid!"
+    });
+});
 exports.default = router;

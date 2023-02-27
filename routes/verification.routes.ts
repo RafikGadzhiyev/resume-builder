@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import dotenv from 'dotenv';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { createTransport } from 'nodemailer';
 import { GenerateVerificationCode } from '../utils/generators.utils';
 dotenv.config();
@@ -11,7 +11,7 @@ const CMS_ACCESS_TOKEN = process.env.SANITY_TEST_TOKEN;
 const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
 const GMAIL = process.env.GMAIL
 
-let verificationCode = GenerateVerificationCode();
+let verificationCode: string = '';
 
 const router = Router();
 const transport_config = {
@@ -26,7 +26,8 @@ let transporter = createTransport(transport_config);
 
 router.get('/send_code/:id', async (req, res) => {
     try {
-        const get_user_email = await axios.get(
+        verificationCode = GenerateVerificationCode();
+        const get_user_email: AxiosResponse = await axios.get(
             `${CMS_BASE_URL}query/${CMS_DATASET}?query=*[_id == '${req.params.id}']`
         )
         if (get_user_email.status >= 400) {
@@ -71,5 +72,19 @@ router.get('/send_code/:id', async (req, res) => {
         })
     }
 });
+
+router.get('/check_code/:code', (req, res) => {
+    let code = req.params.code;
+
+    if (code !== verificationCode) {
+        return res.status(400).send({
+            message: 'Code is not valid'
+        })
+    }
+
+    return res.status(200).send({
+        message: "Code is valid!"
+    })
+})
 
 export default router;
