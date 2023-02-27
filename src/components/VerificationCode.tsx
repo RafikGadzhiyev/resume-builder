@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { RootState } from '../state/store';
 import EnvelopIcon from './../assets/icons/envelop.svg';
 import RepeatIcon from './../assets/icons/repeat.svg'
 import styled from '@emotion/styled'
 import { BaseButton, FormTypeIconContainer } from '../elements/styledElements';
+import { Timer } from './Timer';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -71,15 +72,7 @@ const ResendContainer = styled.div`
     gap: 1rem;
 `
 
-const ResendTimerContainer = styled.div`
-    border: 2.5px solid rgb(241 241 241 / 0.1);
-    background-color: rgb(43 43 47 / 0.5);
-    border-radius: 5px;
-    display: flex;
-    width: fit-content;
-    padding: .1rem .25rem;
-    font-size: .7rem;
-`
+
 
 const ResendButton = styled.button`
     all: unset;
@@ -91,10 +84,16 @@ const ResendButton = styled.button`
     font-size: .8rem;
     transition: 300ms ease;
 
-    &:hover {
+    &:not(:disabled):hover {
         // box-shadow: 0 0 10px #0FFF13;
         filter:drop-shadow(0 0 4px #0fff13)
     }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: .5;
+    }
+
 
 `;
 
@@ -130,9 +129,39 @@ const BackToLogin = styled.a`
 `
 
 export const VerificationCode = () => {
+    const [isResendAvailable, setIsResendAvailable] = React.useState<boolean>(false);
     const { user_id } = useParams();
     const userData = useSelector((store: RootState) => store.authReducer.user);
     const oneTime = React.useRef(1);
+    const cellsForm = React.useRef<HTMLFormElement>(null);
+    const totalInputs = React.useRef<number>(-1);
+
+
+    const changeHandler = (e: React.FormEvent<HTMLInputElement>) => {
+        let element = e.target as HTMLInputElement;
+        let cellIndex = 1;
+        if (element.value.length > 0) {
+            if (cellsForm.current) {
+                while (cellIndex <= totalInputs.current) {
+                    if (cellsForm.current[`cell-${cellIndex}`].value) {
+                        cellIndex++;
+                    } else break;
+                }
+                if (cellIndex > totalInputs.current) return;
+                cellsForm.current[`cell-${cellIndex}`].focus();
+            }
+        }
+
+    }
+
+    React.useEffect(() => {
+        if (cellsForm.current && totalInputs.current === -1) {
+            totalInputs.current = 0;
+            for (let element of cellsForm.current.elements) {
+                if (element.tagName === 'INPUT') totalInputs.current++;
+            }
+        }
+    }, [])
 
     React.useEffect(() => {
         if (user_id && oneTime.current) {
@@ -149,52 +178,68 @@ export const VerificationCode = () => {
             <EmailIcon src={EnvelopIcon} alt="Envelop icon" />
             <span>We have sent to your email <EmailText>{userData?.email}</EmailText> a verification code</span>
         </VerificationNotification>
-        <VerificationForm>
+        <VerificationForm
+            ref={cellsForm}
+        >
             <VerificationFieldsContainer>
                 <VerificationField
+                    autoComplete='off'
                     tabIndex={0}
                     type="text"
                     aria-autocomplete='none'
-                    aria-spellCheck={false}
                     maxLength={1}
+                    autoFocus={true}
+                    name='cell-1'
+                    onInput={(e) => changeHandler(e)}
+                />
+                <VerificationField
+                    autoComplete='off'
+                    type="text"
+                    aria-autocomplete='none'
+                    maxLength={1}
+                    name='cell-2'
+                    onInput={(e) => changeHandler(e)}
+                />
+                <VerificationField
+                    autoComplete='off'
+                    type="text"
+                    aria-autocomplete='none'
+                    maxLength={1}
+                    name='cell-3'
+                    onInput={(e) => changeHandler(e)}
+                />
+                <VerificationField
+                    autoComplete='off'
+                    type="text"
+                    aria-autocomplete='none'
+                    maxLength={1}
+                    name='cell-4'
+                    onInput={(e) => changeHandler(e)}
+                />
+                <VerificationField
+                    autoComplete='off'
+                    type="text"
+                    aria-autocomplete='none'
+                    maxLength={1}
+                    name='cell-5'
+                    onInput={(e) => changeHandler(e)}
                 />
                 <VerificationField
                     type="text"
+                    autoComplete='off'
                     aria-autocomplete='none'
-                    aria-spellCheck={false}
                     maxLength={1}
-                />
-                <VerificationField
-                    type="text"
-                    aria-autocomplete='none'
-                    aria-spellCheck={false}
-                    maxLength={1}
-                />
-                <VerificationField
-                    type="text"
-                    aria-autocomplete='none'
-                    aria-spellCheck={false}
-                    maxLength={1}
-                />
-                <VerificationField
-                    type="text"
-                    aria-autocomplete='none'
-                    aria-spellCheck={false}
-                    maxLength={1}
-                />
-                <VerificationField
-                    type="text"
-                    aria-autocomplete='none'
-                    aria-spellCheck={false}
-                    maxLength={1}
+                    name='cell-6'
+                    onInput={(e) => changeHandler(e)}
                 />
             </VerificationFieldsContainer>
             <ResendContainer>
-                <ResendTimerContainer>
-                    <span>00</span>:
-                    <span>59</span>
-                </ResendTimerContainer>
+                <Timer
+                    AvailableResend={setIsResendAvailable}
+                    value={50000}
+                />
                 <ResendButton
+                    disabled={!isResendAvailable}
                     type='button'
                 >
                     Resend code <img src={RepeatIcon} alt='Repeat icon' />
@@ -206,6 +251,10 @@ export const VerificationCode = () => {
             >
                 Check code
             </BaseButton>
+            {/* <Link
+                to='/auth'
+            >
+        </Link> */}
             <BackToLogin href='#'>Login via another email</BackToLogin>
         </VerificationForm>
     </VerificationContainer>
