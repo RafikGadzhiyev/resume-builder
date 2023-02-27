@@ -7,6 +7,7 @@ import RepeatIcon from './../assets/icons/repeat.svg'
 import styled from '@emotion/styled'
 import { BaseButton, FormTypeIconContainer } from '../elements/styledElements';
 import { Timer } from './Timer';
+import { VerificationCodeBlock } from './VerificationCodeBlock';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -36,43 +37,11 @@ const VerificationForm = styled.form`
     margin-top: 5rem;
 `;
 
-const VerificationFieldsContainer = styled.div`
-    display: flex;
-    gap: 1rem
-`
-
-const VerificationField = styled.input`
-    all: unset;
-    cursor: text;
-    color: #f1f1f1;
-    border-radius: 5px;
-    background-color: rgb(43 43 47 / 0.5);
-    padding: 1.75rem 0.75rem;
-    font-size:5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    text-align: center;
-    border: 2.5px solid rgb(241 241 241 / 0.1);
-    transition: 300ms ease;
-
-    &:hover {
-        border-color: rgb(241 241 241 / 0.5);
-    }
-    
-    &:focus {
-        border-color: rgb(241 241 241 / 0.75);
-    }
-
-`;
 
 const ResendContainer = styled.div`
     display: flex;
     gap: 1rem;
 `
-
-
 
 const ResendButton = styled.button`
     all: unset;
@@ -130,12 +99,13 @@ const BackToLogin = styled.a`
 
 export const VerificationCode = () => {
     const [isResendAvailable, setIsResendAvailable] = React.useState<boolean>(false);
+    const [isFull, setIsFull] = React.useState<boolean>(false)
+    const [timer, setTimer] = React.useState<number>(60);
     const { user_id } = useParams();
     const userData = useSelector((store: RootState) => store.authReducer.user);
     const oneTime = React.useRef(1);
     const cellsForm = React.useRef<HTMLFormElement>(null);
     const totalInputs = React.useRef<number>(-1);
-
 
     const changeHandler = (e: React.FormEvent<HTMLInputElement>) => {
         let element = e.target as HTMLInputElement;
@@ -147,11 +117,17 @@ export const VerificationCode = () => {
                         cellIndex++;
                     } else break;
                 }
-                if (cellIndex > totalInputs.current) return;
+                if (cellIndex > totalInputs.current) {
+                    setIsFull(() => true);
+                    return;
+                }
+
                 cellsForm.current[`cell-${cellIndex}`].focus();
             }
         }
-
+        if (isFull) {
+            setIsFull(() => false);
+        }
     }
 
     React.useEffect(() => {
@@ -173,7 +149,6 @@ export const VerificationCode = () => {
     }, [user_id])
 
     return <VerificationContainer>
-        {/* Your id {user_id} */}
         <VerificationNotification>
             <EmailIcon src={EnvelopIcon} alt="Envelop icon" />
             <span>We have sent to your email <EmailText>{userData?.email}</EmailText> a verification code</span>
@@ -181,73 +156,30 @@ export const VerificationCode = () => {
         <VerificationForm
             ref={cellsForm}
         >
-            <VerificationFieldsContainer>
-                <VerificationField
-                    autoComplete='off'
-                    tabIndex={0}
-                    type="text"
-                    aria-autocomplete='none'
-                    maxLength={1}
-                    autoFocus={true}
-                    name='cell-1'
-                    onInput={(e) => changeHandler(e)}
-                />
-                <VerificationField
-                    autoComplete='off'
-                    type="text"
-                    aria-autocomplete='none'
-                    maxLength={1}
-                    name='cell-2'
-                    onInput={(e) => changeHandler(e)}
-                />
-                <VerificationField
-                    autoComplete='off'
-                    type="text"
-                    aria-autocomplete='none'
-                    maxLength={1}
-                    name='cell-3'
-                    onInput={(e) => changeHandler(e)}
-                />
-                <VerificationField
-                    autoComplete='off'
-                    type="text"
-                    aria-autocomplete='none'
-                    maxLength={1}
-                    name='cell-4'
-                    onInput={(e) => changeHandler(e)}
-                />
-                <VerificationField
-                    autoComplete='off'
-                    type="text"
-                    aria-autocomplete='none'
-                    maxLength={1}
-                    name='cell-5'
-                    onInput={(e) => changeHandler(e)}
-                />
-                <VerificationField
-                    type="text"
-                    autoComplete='off'
-                    aria-autocomplete='none'
-                    maxLength={1}
-                    name='cell-6'
-                    onInput={(e) => changeHandler(e)}
-                />
-            </VerificationFieldsContainer>
+            <VerificationCodeBlock
+                changeHandler={changeHandler}
+            />
             <ResendContainer>
                 <Timer
                     AvailableResend={setIsResendAvailable}
-                    value={50000}
+                    value={timer}
                 />
                 <ResendButton
                     disabled={!isResendAvailable}
                     type='button'
+                    onClick={() => {
+                        setTimer(prev => prev * 2);
+                        fetch(
+                            `${SERVER_BASE_URL}/verification/send_code/${user_id}`
+                        )
+                    }}
                 >
                     Resend code <img src={RepeatIcon} alt='Repeat icon' />
                 </ResendButton>
             </ResendContainer>
             <BaseButton
                 type='button'
-
+                disabled={!isFull}
             >
                 Check code
             </BaseButton>

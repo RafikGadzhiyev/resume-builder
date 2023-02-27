@@ -20,8 +20,8 @@ interface ITimer {
 
 
 export const Timer: React.FC<ITimer> = ({ value, AvailableResend }) => {
-    const [seconds, setSeconds] = React.useState(value);
-    const isWorking = React.useRef<boolean>(true);
+    const [seconds, setSeconds] = React.useState(-1);
+    const isWorking = React.useRef<boolean>(false);
     const timerId = React.useRef<ReturnType<typeof setTimeout>>(-1);
 
     React.useEffect(() => {
@@ -31,15 +31,25 @@ export const Timer: React.FC<ITimer> = ({ value, AvailableResend }) => {
         if (isWorking.current === false) {
             timerId.current = -1;
         }
+
+        return () => clearInterval(timerId.current);
     }, [isWorking.current])
 
     React.useEffect(() => {
-        if (seconds === 0) {
+        if (seconds <= 0) {
             isWorking.current = false;
             clearInterval(timerId.current);
             AvailableResend(() => true);
         }
     }, [seconds])
+
+    React.useEffect(() => {
+        setSeconds(() => value);
+        isWorking.current = true;
+        timerId.current = -1;
+        AvailableResend(() => false);
+        clearInterval(timerId.current);
+    }, [value])
 
     return <TimerContainer>
         <span>{ConvertToMinutes(seconds)}</span>:

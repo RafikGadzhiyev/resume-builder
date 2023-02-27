@@ -119,13 +119,18 @@ export const BaseButton = styled.button`
     margin-top: 1rem;
     transition: 300ms ease;
 
-    &:hover {
+    &:not(:disabled):hover {
         box-shadow: 0 0 10px 2px #0FFF13;
     }
 
     &:active {
         box-shadow: none;
         background-color: #07A70D;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: .5;
     }
 
 `;
