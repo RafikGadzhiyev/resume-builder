@@ -19,16 +19,11 @@ function App() {
               element={<ProtectedRoute />}
             >
               <Route
-                path='profile'
-                element={<div>Welcomr back!</div>}
-              />
-              <Route />
-              <Route
                 path='verification/:user_id'
                 element={<VerificationCode />}
               />
               <Route
-                path='main/profile'
+                path='profile'
                 element={<Profile />}
               />
             </Route>

@@ -191,7 +191,7 @@ export const VerificationCode = () => {
                     fetch(`${SERVER_BASE_URL}/verification/check_code/${code.current}`)
                         .then(response => {
                             response.json()
-                                .then(result => navigate('/main/profile'))
+                                .then(result => navigate('/profile'))
                         })
                 }}
             >
