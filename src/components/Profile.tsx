@@ -8,3 +8,5 @@ export const Profile = () => {
         Welcome, {user?.full_name}
     </div>
 }
+
+// ! GIT PUSH -U MAIN 

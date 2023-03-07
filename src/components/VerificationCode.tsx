@@ -67,7 +67,7 @@ const ResendButton = styled.button`
 
 `;
 
-const BackToLogin = styled.a`
+const BackToLogin = styled(Link)`
     all: unset;
     cursor: pointer;
     color: #0BDA13;
@@ -197,12 +197,12 @@ export const VerificationCode = () => {
             >
                 Check code
             </BaseButton>
-            <Link
+            <BackToLogin
                 to='/auth'
                 onClick={() => dispatch(ResetUser())}
             >
                 Login via another email
-            </Link>
+            </BackToLogin>
             {/* <BackToLogin href='#' onClick={() => ResetUser()}>Login via another email</BackToLogin> */}
         </VerificationForm>
     </VerificationContainer>
