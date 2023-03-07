@@ -25,17 +25,6 @@ export const Timer: React.FC<ITimer> = ({ value, AvailableResend }) => {
     const timerId = React.useRef<ReturnType<typeof setTimeout>>(-1);
 
     React.useEffect(() => {
-        if (isWorking.current && timerId.current === -1) {
-            timerId.current = setInterval(() => setSeconds(prev => prev - 1), 1000);
-        }
-        if (isWorking.current === false) {
-            timerId.current = -1;
-        }
-
-        return () => clearInterval(timerId.current);
-    }, [isWorking.current])
-
-    React.useEffect(() => {
         if (seconds <= 0) {
             isWorking.current = false;
             clearInterval(timerId.current);
@@ -49,6 +38,13 @@ export const Timer: React.FC<ITimer> = ({ value, AvailableResend }) => {
         timerId.current = -1;
         AvailableResend(() => false);
         clearInterval(timerId.current);
+
+        if (isWorking.current && timerId.current === -1) {
+            timerId.current = setInterval(() => setSeconds(prev => prev - 1), 1000);
+        }
+
+        return () => clearInterval(timerId.current);
+
     }, [value])
 
     return <TimerContainer>

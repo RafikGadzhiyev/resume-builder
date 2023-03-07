@@ -6,10 +6,6 @@ import { RootState } from '../state/store';
 export const ProtectedRoute = () => {
     const userData = useSelector((store: RootState) => store.authReducer.user);
 
-    // React.useEffect(() => {
-
-    // })
-
     return userData === null
         ? <Navigate
             to='/auth'

@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { Auth } from './pages/AuthPage';
 import { ProtectedRoute } from './pages/ProtectedRoute';
 import { VerificationCode } from './components/VerificationCode';
+import { Profile } from './components/Profile';
 
 function App() {
 
@@ -25,6 +26,10 @@ function App() {
               <Route
                 path='verification/:user_id'
                 element={<VerificationCode />}
+              />
+              <Route
+                path='main/profile'
+                element={<Profile />}
               />
             </Route>
             <Route

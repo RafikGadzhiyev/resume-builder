@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { json } from 'react-router-dom';
 import { ILogin } from '../../interfaces/auth.interface'
 
 const SERVER_BASE_URL: string = import.meta.env.VITE_SERVER_BASE_URL;
@@ -74,11 +73,14 @@ export const SignupUser = createAsyncThunk(
     }
 )
 
+
 const AuthSlice = createSlice({
     name: "auth-slice",
     initialState,
     reducers: {
-
+        ResetUser: (state) => {
+            state.user = null;
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(
@@ -119,5 +121,7 @@ const AuthSlice = createSlice({
     }
 })
 
+
+export const { ResetUser } = AuthSlice.actions
 
 export default AuthSlice.reducer

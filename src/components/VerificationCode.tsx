@@ -1,13 +1,14 @@
 import React from 'react';
-import { useSelector } from 'react-redux'
-import { useParams, Link } from 'react-router-dom'
-import { RootState } from '../state/store';
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { AppDispatch, RootState } from '../state/store';
 import EnvelopIcon from './../assets/icons/envelop.svg';
 import RepeatIcon from './../assets/icons/repeat.svg'
 import styled from '@emotion/styled'
 import { BaseButton, FormTypeIconContainer } from '../elements/styledElements';
 import { Timer } from './Timer';
 import { VerificationCodeBlock } from './VerificationCodeBlock';
+import { ResetUser } from '../state/slices/auth.slice';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -102,18 +103,24 @@ export const VerificationCode = () => {
     const [isFull, setIsFull] = React.useState<boolean>(false)
     const [timer, setTimer] = React.useState<number>(60);
     const { user_id } = useParams();
+    const navigate = useNavigate();
     const userData = useSelector((store: RootState) => store.authReducer.user);
     const oneTime = React.useRef(1);
     const cellsForm = React.useRef<HTMLFormElement>(null);
     const totalInputs = React.useRef<number>(-1);
+    const code = React.useRef<string>('');
+
+    const dispatch = useDispatch<AppDispatch>();
 
     const changeHandler = (e: React.FormEvent<HTMLInputElement>) => {
+        code.current = '';
         let element = e.target as HTMLInputElement;
         let cellIndex = 1;
         if (element.value.length > 0) {
             if (cellsForm.current) {
                 while (cellIndex <= totalInputs.current) {
                     if (cellsForm.current[`cell-${cellIndex}`].value) {
+                        code.current += cellsForm.current[`cell-${cellIndex}`].value;
                         cellIndex++;
                     } else break;
                 }
@@ -180,14 +187,23 @@ export const VerificationCode = () => {
             <BaseButton
                 type='button'
                 disabled={!isFull}
+                onClick={() => {
+                    fetch(`${SERVER_BASE_URL}/verification/check_code/${code.current}`)
+                        .then(response => {
+                            response.json()
+                                .then(result => navigate('/main/profile'))
+                        })
+                }}
             >
                 Check code
             </BaseButton>
-            {/* <Link
+            <Link
                 to='/auth'
+                onClick={() => dispatch(ResetUser())}
             >
-        </Link> */}
-            <BackToLogin href='#'>Login via another email</BackToLogin>
+                Login via another email
+            </Link>
+            {/* <BackToLogin href='#' onClick={() => ResetUser()}>Login via another email</BackToLogin> */}
         </VerificationForm>
     </VerificationContainer>
 }
