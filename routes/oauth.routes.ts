@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { decode, JwtPayload, sign } from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { IGoogleOauthCredentials } from "../interfaces/aouth.interfaces";
+import { IAuthCredentials } from "../interfaces/aouth.interfaces";
 import { hashSync, compareSync } from 'bcrypt';
 import axios from 'axios';
 
@@ -36,22 +36,25 @@ router.get('/google', (req: Request, res: Response) => {
             message: "Try again!"
         })
     }
-    const data: IGoogleOauthCredentials = {
+    const data: IAuthCredentials = {
+        id: payload.id,
         email: payload.email || '',
-        email_verified: payload.email_verified,
-        name: payload.name,
         given_name: payload.given_name,
         family_name: payload.family_name,
+        exp: payload.exp,
+        created_at: Date.now(),
+        age: payload.age || 0,
+        get full_name() {
+            return this.given_name + ' ' + this.family_name;
+        }
     }
 
-    const jwt_token = sign(data, TOKEN_SECRET, {
-        expiresIn: '4h'
-    });
+    const jwt_token = sign(data, TOKEN_SECRET);
 
     res.cookie("jwt", jwt_token, {
         httpOnly: true,
         secure: true,
-        maxAge: 5 * 60 * 60 * 1000
+        maxAge: payload.exp
     });
 
     return res.status(201).send({
@@ -62,35 +65,62 @@ router.get('/google', (req: Request, res: Response) => {
 })
 
 router.post('/login', async (req, res) => {
-    // console.log(req.body);
-    const {
-        email,
-        password
-    } = req.body;
+    try {
+        const TOKEN_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+        if (!TOKEN_SECRET) {
+            return res.status(500).send({
+                message: "Server Error!\nReason: Cannot get main detail!"
+            })
+        }
+        const {
+            email,
+            password
+        } = req.body;
 
-    const check_user = await axios.get(
-        `${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`
-    )
-    if (check_user.data.result.length === 0) {
-        return res.status(404).send({
-            message: "This email not found!"
+        const check_user = await axios.get(
+            `${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`
+        )
+        if (check_user.data.result.length === 0) {
+            return res.status(404).send({
+                message: "This email not found!"
+            })
+        }
+
+        const user = check_user.data.result[0];
+        const isPasswordValid = compareSync(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).send({
+                message: "Incorrect password!"
+            })
+
+        }
+
+        const data: IAuthCredentials = {
+            id: user._id,
+            age: user.age,
+            given_name: user.first_name,
+            family_name: user.last_name,
+            full_name: user.first_name + ' ' + user.last_name,
+            email,
+            exp: 4 * 60 * 60 * 1000,
+            created_at: Date.now()
+        }
+
+        const accessToken = sign(data, TOKEN_SECRET)
+
+        res.cookie('jwt', accessToken, {
+            secure: true,
+            httpOnly: true,
+            maxAge: 4 * 60 * 60 * 1000
         })
-    }
 
-    const user = check_user.data.result[0];
-    const isPasswordValid = compareSync(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(401).send({
-            message: "Incorrect password!"
+
+        res.status(200).send({
+            ...data
         })
-    }
+    } catch (e) {
 
-    res.status(200).send({
-        id: user._id,
-        age: user.age,
-        full_name: user.first_name + ' ' + user.last_name,
-        email
-    })
+    }
 })
 
 router.post('/sign_up', async (req, res) => {
@@ -152,8 +182,3 @@ router.post('/sign_up', async (req, res) => {
 // TODO: add login router via get
 
 export default router
-
-/*
-    To this URL: https://<YOUR_DOMAIN>/api/<YOUR_CT>
-With the header: Authorization: bearer <YOUR_API_TOKEN>
-*/

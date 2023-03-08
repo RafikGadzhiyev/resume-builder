@@ -45,19 +45,22 @@ router.get('/google', (req, res) => {
         });
     }
     const data = {
+        id: payload.id,
         email: payload.email || '',
-        email_verified: payload.email_verified,
-        name: payload.name,
         given_name: payload.given_name,
         family_name: payload.family_name,
+        exp: payload.exp,
+        created_at: Date.now(),
+        age: payload.age || 0,
+        get full_name() {
+            return this.given_name + ' ' + this.family_name;
+        }
     };
-    const jwt_token = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET, {
-        expiresIn: '4h'
-    });
+    const jwt_token = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET);
     res.cookie("jwt", jwt_token, {
         httpOnly: true,
         secure: true,
-        maxAge: 5 * 60 * 60 * 1000
+        maxAge: payload.exp
     });
     return res.status(201).send({
         message: "Token successfuly created!",
@@ -65,27 +68,47 @@ router.get('/google', (req, res) => {
     });
 });
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(req.body);
-    const { email, password } = req.body;
-    const check_user = yield axios_1.default.get(`${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`);
-    if (check_user.data.result.length === 0) {
-        return res.status(404).send({
-            message: "This email not found!"
+    try {
+        const TOKEN_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+        if (!TOKEN_SECRET) {
+            return res.status(500).send({
+                message: "Server Error!\nReason: Cannot get main detail!"
+            });
+        }
+        const { email, password } = req.body;
+        const check_user = yield axios_1.default.get(`${CMS_BASE_URL}query/${CMS_DATASET}?query=*[email == "${email}"]`);
+        if (check_user.data.result.length === 0) {
+            return res.status(404).send({
+                message: "This email not found!"
+            });
+        }
+        const user = check_user.data.result[0];
+        const isPasswordValid = (0, bcrypt_1.compareSync)(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).send({
+                message: "Incorrect password!"
+            });
+        }
+        const data = {
+            id: user._id,
+            age: user.age,
+            given_name: user.first_name,
+            family_name: user.last_name,
+            full_name: user.first_name + ' ' + user.last_name,
+            email,
+            exp: 4 * 60 * 60 * 1000,
+            created_at: Date.now()
+        };
+        const accessToken = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET);
+        res.cookie('jwt', accessToken, {
+            secure: true,
+            httpOnly: true,
+            maxAge: 4 * 60 * 60 * 1000
         });
+        res.status(200).send(Object.assign({}, data));
     }
-    const user = check_user.data.result[0];
-    const isPasswordValid = (0, bcrypt_1.compareSync)(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(401).send({
-            message: "Incorrect password!"
-        });
+    catch (e) {
     }
-    res.status(200).send({
-        id: user._id,
-        age: user.age,
-        full_name: user.first_name + ' ' + user.last_name,
-        email
-    });
 }));
 router.post('/sign_up', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -134,7 +157,3 @@ router.post('/sign_up', (req, res) => __awaiter(void 0, void 0, void 0, function
 }));
 // TODO: add login router via get
 exports.default = router;
-/*
-    To this URL: https://<YOUR_DOMAIN>/api/<YOUR_CT>
-With the header: Authorization: bearer <YOUR_API_TOKEN>
-*/ 

@@ -27,35 +27,55 @@ router.get('/refresh', (req, res) => __awaiter(void 0, void 0, void 0, function*
     const TOKEN_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     if (!TOKEN_SECRET) {
         return res.status(500).send({
-            message: "Sever Error!\nReason: Cannot see main detail!"
+            message: "Server Error!\nReason: Cannot get main detail!"
         });
     }
     (0, jsonwebtoken_1.verify)(REFRESH_TOKEN, TOKEN_SECRET, (err, payload) => {
         if (err) {
-            // just right now
-            // TODO: CREATE HANDLER FOR EACH ERROR STATUS!
             return res.status(406).send({ message: "Illegal access!\nReason: Invalid refresh token!" });
         }
         else {
-            const data = {
-                email: payload.email || '',
-                email_verified: payload.email_verified,
-                name: payload.name,
-                given_name: payload.given_name,
-                family_name: payload.family_name,
-            };
-            const refreshedToken = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET, {
-                expiresIn: '4h'
-            });
+            const refreshedToken = (0, jsonwebtoken_1.sign)(Object.assign(Object.assign({}, payload), { created_at: Date.now() }), TOKEN_SECRET);
             res.cookie('jwt', refreshedToken, {
                 secure: true,
                 httpOnly: true,
-                maxAge: 5 * 60 * 60 * 1000
+                maxAge: 4 * 60 * 60 * 1000
             });
             return res.status(200).send({
-                message: "Token successfuly refreshed!"
+                message: "Token successfully refreshed!"
             });
         }
     });
+}));
+router.get('/retrieve', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.cookies.jwt) {
+            return res.status(401).send({
+                message: "Token does not exist! Please, log in again!"
+            });
+        }
+        const TOKEN = req.cookies.jwt;
+        const TOKEN_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+        if (!TOKEN_SECRET) {
+            return res.status(500).send({
+                message: "Server Error!\nReason: Cannot get main detail!"
+            });
+        }
+        (0, jsonwebtoken_1.verify)(TOKEN, TOKEN_SECRET, (err, payload) => {
+            if (err) {
+                return res.status(406).send({
+                    message: 'Illegal access!\nReason: Invalid token!'
+                });
+            }
+            else {
+                return res.status(200).send({
+                    message: "Token succeessfully retrieved!",
+                    payload
+                });
+            }
+        });
+    }
+    catch (e) {
+    }
 }));
 exports.default = router;
