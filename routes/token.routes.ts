@@ -26,7 +26,9 @@ router.get('/refresh', async (req: Request, res: Response) => {
             const refreshedToken = sign({
                 ...payload,
                 created_at: Date.now()
-            }, TOKEN_SECRET)
+            }, TOKEN_SECRET, {
+                expiresIn: '4h'
+            })
 
             res.cookie('jwt', refreshedToken, {
                 secure: true,
@@ -58,6 +60,7 @@ router.get('/retrieve', async (req, res) => {
                 message: "Server Error!\nReason: Cannot get main detail!"
             })
         }
+
         verify(TOKEN, TOKEN_SECRET, (err: VerifyErrors | null, payload: any) => {
             if (err) {
                 return res.status(406).send({

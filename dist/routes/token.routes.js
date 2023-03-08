@@ -35,7 +35,9 @@ router.get('/refresh', (req, res) => __awaiter(void 0, void 0, void 0, function*
             return res.status(406).send({ message: "Illegal access!\nReason: Invalid refresh token!" });
         }
         else {
-            const refreshedToken = (0, jsonwebtoken_1.sign)(Object.assign(Object.assign({}, payload), { created_at: Date.now() }), TOKEN_SECRET);
+            const refreshedToken = (0, jsonwebtoken_1.sign)(Object.assign(Object.assign({}, payload), { created_at: Date.now() }), TOKEN_SECRET, {
+                expiresIn: '4h'
+            });
             res.cookie('jwt', refreshedToken, {
                 secure: true,
                 httpOnly: true,

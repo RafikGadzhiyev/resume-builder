@@ -49,14 +49,15 @@ router.get('/google', (req, res) => {
         email: payload.email || '',
         given_name: payload.given_name,
         family_name: payload.family_name,
-        exp: payload.exp,
         created_at: Date.now(),
         age: payload.age || 0,
         get full_name() {
             return this.given_name + ' ' + this.family_name;
         }
     };
-    const jwt_token = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET);
+    const jwt_token = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET, {
+        expiresIn: '4h'
+    });
     res.cookie("jwt", jwt_token, {
         httpOnly: true,
         secure: true,
@@ -64,7 +65,7 @@ router.get('/google', (req, res) => {
     });
     return res.status(201).send({
         message: "Token successfuly created!",
-        credentials: payload
+        credentials: Object.assign(Object.assign({}, data), { exp: data.created_at + 4 * 60 * 60 * 1000 })
     });
 });
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -96,16 +97,17 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             family_name: user.last_name,
             full_name: user.first_name + ' ' + user.last_name,
             email,
-            exp: 4 * 60 * 60 * 1000,
-            created_at: Date.now()
+            created_at: Date.now(),
         };
-        const accessToken = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET);
+        const accessToken = (0, jsonwebtoken_1.sign)(data, TOKEN_SECRET, {
+            expiresIn: '4h'
+        });
         res.cookie('jwt', accessToken, {
             secure: true,
             httpOnly: true,
             maxAge: 4 * 60 * 60 * 1000
         });
-        res.status(200).send(Object.assign({}, data));
+        res.status(200).send(Object.assign(Object.assign({}, data), { exp: data.created_at + 4 * 60 * 60 * 1000 }));
     }
     catch (e) {
     }
