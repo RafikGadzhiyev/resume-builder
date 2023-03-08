@@ -1,6 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import { RootState } from '../state/store';
 
 interface IState {
     open: boolean
@@ -10,31 +12,40 @@ interface IState {
 
 interface IProps extends React.PropsWithChildren {
     message: string,
-    open: boolean
 }
 
-export const ErrorSnackBar: React.FC<IProps> = ({ message, open }) => {
-    const [snackState, setSnakeState] = React.useState<IState>({
-        open,
-        vertical: 'top',
-        horizontal: 'center'
-    });
+export const ErrorSnackBar: React.FC<IProps> = ({ message }) => {
+    const error = useSelector((store: RootState) => store.authReducer.error)
+    const [isOpen, setIsOpen] = React.useState<boolean>(error !== null);
 
-    const onClose = () => {
-        setSnakeState((prevState) => ({ ...prevState, open: false }))
+    const clickHandler = (e?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') return;
+
+        setIsOpen(() => false);
     }
+
+    React.useEffect(() => {
+        setIsOpen(() => error !== null)
+    }, [error])
+
     return <Snackbar
-        anchorOrigin={{ vertical: snackState.vertical, horizontal: snackState.horizontal }}
-        open={snackState.open}
-        autoHideDuration={5000}
-        onClose={onClose}
-        message={message}
-        key={snackState.horizontal + snackState.vertical}
-    />
-
-}
-export const ErrorAlert: React.FC<IProps> = ({ message, open }) => {
-    return <Alert>
-
-    </Alert>
+        key={message}
+        open={isOpen}
+        autoHideDuration={2500}
+        onClose={clickHandler}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center'
+        }}
+    >
+        <Alert
+            onClose={clickHandler}
+            severity={'error'}
+            sx={{
+                width: '100%'
+            }}
+        >
+            {message}
+        </Alert>
+    </Snackbar>
 }

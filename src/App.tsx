@@ -19,18 +19,18 @@ function App() {
               element={<ProtectedRoute />}
             >
               <Route
+                path='profile'
+                element={<Profile />}
+              />
+              <Route
                 path='verification/:user_id'
                 element={<VerificationCode />}
               />
               <Route
-                path='profile'
-                element={<Profile />}
+                path='/auth'
+                element={<Auth />}
               />
             </Route>
-            <Route
-              path='/auth'
-              element={<Auth />}
-            />
           </Routes>
         </Router>
       </GoogleOAuthProvider>

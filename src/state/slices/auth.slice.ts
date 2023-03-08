@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { ILogin } from '../../interfaces/auth.interface'
 
 const SERVER_BASE_URL: string = import.meta.env.VITE_SERVER_BASE_URL;
@@ -33,7 +33,8 @@ export const AuthUser = createAsyncThunk(
                 body: JSON.stringify(payload),
                 headers: {
                     "Content-Type": "application/json"
-                }
+                },
+                credentials: "include"
             });
             if (!response.ok) {
                 throw new Error("Incorrect credentials!")
@@ -61,6 +62,9 @@ export const SignupUser = createAsyncThunk(
                     "Content-Type": 'application/json'
                 }
             })
+            if (!response.ok) {
+                throw new Error("Incorrect credentials!")
+            }
             const data = await response.json();
             return data;
         } catch (err: any) {
@@ -73,6 +77,30 @@ export const SignupUser = createAsyncThunk(
     }
 )
 
+export const RetrieveUser = createAsyncThunk(
+    "user/retrieve",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await fetch(
+                `${SERVER_BASE_URL}/token/retrieve`,
+                {
+                    credentials: "include"
+                }
+            );
+            if (!response.ok) {
+                throw new Error("Token does not exist!")
+            }
+            const data = await response.json();
+            return data.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
 
 const AuthSlice = createSlice({
     name: "auth-slice",
@@ -80,6 +108,9 @@ const AuthSlice = createSlice({
     reducers: {
         ResetUser: (state) => {
             state.user = null;
+        },
+        UpdateUser: (state, action: PayloadAction<ILogin>) => {
+            state.user = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -87,6 +118,8 @@ const AuthSlice = createSlice({
             AuthUser.pending,
             (state) => {
                 state.isLoading = true;
+                state.error = null;
+                state.user = null;
             }
         ).addCase(
             AuthUser.fulfilled,
@@ -103,7 +136,9 @@ const AuthSlice = createSlice({
         ).addCase(
             SignupUser.pending,
             (state) => {
-                state.isLoading = true
+                state.isLoading = true;
+                state.error = null;
+                state.user = null;
             }
         ).addCase(
             SignupUser.fulfilled,
@@ -117,11 +152,30 @@ const AuthSlice = createSlice({
                 state.isLoading = false;
                 state.error = "Error ocured!"
             }
+        ).addCase(
+            RetrieveUser.pending,
+            (state) => {
+                state.isLoading = true
+                state.error = null;
+                state.user = null;
+            }
+        ).addCase(
+            RetrieveUser.fulfilled,
+            (state, action) => {
+                state.user = action.payload;
+                state.isLoading = false;
+            }
+        ).addCase(
+            RetrieveUser.rejected,
+            (state) => {
+                state.isLoading = false;
+                state.error = "Error ocured!"
+            }
         )
     }
 })
 
 
-export const { ResetUser } = AuthSlice.actions
+export const { ResetUser, UpdateUser } = AuthSlice.actions
 
 export default AuthSlice.reducer

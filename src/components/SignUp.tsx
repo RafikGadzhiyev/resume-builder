@@ -1,6 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import LockIcon from './../assets/icons/lock.svg'
 import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
@@ -30,9 +29,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
     const [isOpened, setIsOpened] = React.useState<boolean>(false);
     const [errors, setErrors] = React.useState<Array<1 | 0>>([1, 1, 1]);
     const FormRef = React.useRef<HTMLFormElement | null>(null);
-    const userData = useSelector((store: RootState) => store.authReducer.user);
     const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();
 
     const createProfile = () => {
         if (FormRef.current) {
@@ -75,12 +72,6 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             }
         }
     }
-
-    // React.useEffect(() => {
-    //     if (userData) {
-    //         navigate('/verification/' + userData.id);
-    //     }
-    // }, [userData])
 
     return <AuthForm
         ref={FormRef}

@@ -52,32 +52,17 @@ export const Auth = () => {
     const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
     const br = React.useRef<boolean>(true);
 
-    const checkUserToken = React.useCallback((token: string) => {
-        fetch(
-            BASE_URL + '/auth/google',
-            {
-                credentials: 'include',
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            }
-        );
-    }, [])
-
-    // React.useEffect(() => {
-    //     if (br.current) {
-    //         br.current = false;
-    //         fetch(BASE_URL + '/token/refresh', {
-    //             credentials: 'include'
-    //         })
-    //     }
+    // const checkUserToken = React.useCallback((token: string) => {
+    //     fetch(
+    //         BASE_URL + '/auth/google',
+    //         {
+    //             credentials: 'include',
+    //             headers: {
+    //                 "Authorization": `Bearer ${token}`
+    //             }
+    //         }
+    //     );
     // }, [])
-
-    React.useEffect(() => {
-        if (userData) {
-            navigate(`/verification/${userData.id}`)
-        }
-    }, [userData])
 
     return <AuthContainer>
         <AuthWrapper>

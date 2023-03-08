@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import KeyIcon from './../assets/icons/key_icon.svg'
 import eyeClosed from './../assets/icons/eye_closed.svg';
@@ -32,8 +33,9 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
     const FormRef = React.useRef<HTMLFormElement | null>(null);
     const [errors, setErrors] = React.useState<Array<1 | 0>>([1, 1]);
     const [isOpened, setIsOpened] = React.useState<boolean>(false);
+    const navigate = useNavigate();
 
-    const loginHandler = () => {
+    const loginHandler = React.useCallback(() => {
         if (FormRef.current) {
             const MIN_PASSWORD_LENGTH = 6;
             const validation: Array<1 | 0> = [1, 1];
@@ -60,9 +62,17 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
                     email: email.value,
                     password: password.value
                 }))
+                    .then(response => {
+                        if (response.meta.requestStatus === 'fulfilled') {
+                            navigate('/verification/' + response.payload.id)
+                        }
+                        else if (response.meta.requestStatus === 'rejected') {
+
+                        }
+                    })
             }
         }
-    }
+    }, [])
 
     return <AuthForm
         ref={FormRef}
@@ -79,13 +89,12 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
             opacity: 0
         }}
     >
-        {
-            auth.error &&
-            <ErrorSnackBar
-                message={auth.error}
-                open={true}
-            />
-        }
+        {/* {
+            auth.error && */}
+        <ErrorSnackBar
+            message={auth.error || ''}
+        />
+        {/* } */}
         <FormType>
             <FormTypeIcon
                 src={KeyIcon}
