@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "@emotion/styled";
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useFocus } from '../hooks/useFocus';
 import ChevronDown from './../assets/icons/chevron_down.svg'
 
@@ -74,36 +74,42 @@ export const Filter = () => {
                 className={currentFocusResult ? 'up' : ''}
             />
         </FilterButton>
-        {
-            currentFocusResult &&
+        <AnimatePresence>
 
-            <FilterSelect
-                initial={{
-                    opacity: 0,
-                    y: '75%'
-                }}
-                animate={{
-                    opacity: 1,
-                    y: '100%'
-                }}
+            {
+                currentFocusResult &&
 
-            >
-                <SelectItem>
-                    <SelectButton>
-                        From newest
-                    </SelectButton>
-                </SelectItem>
-                <SelectItem>
-                    <SelectButton>
-                        From oldest
-                    </SelectButton>
-                </SelectItem>
-                <SelectItem>
-                    <SelectButton>
-                        Alphabetical
-                    </SelectButton>
-                </SelectItem>
-            </FilterSelect>
-        }
+                <FilterSelect
+                    initial={{
+                        opacity: 0,
+                        y: '95%'
+                    }}
+                    animate={{
+                        opacity: 1,
+                        y: '100%'
+                    }}
+                    exit={{
+                        opacity: 0,
+                        y: "95%",
+                    }}
+                >
+                    <SelectItem>
+                        <SelectButton>
+                            From newest
+                        </SelectButton>
+                    </SelectItem>
+                    <SelectItem>
+                        <SelectButton>
+                            From oldest
+                        </SelectButton>
+                    </SelectItem>
+                    <SelectItem>
+                        <SelectButton>
+                            Alphabetical
+                        </SelectButton>
+                    </SelectItem>
+                </FilterSelect>
+            }
+        </AnimatePresence>
     </FilterBlock>
 }

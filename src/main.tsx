@@ -23,6 +23,23 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           box-sizing: inherit;
         }
 
+        *::-webkit-scrollbar {
+          width: .25rem;
+        }
+
+        *::-webkit-scrollbar-thumb {
+          border-radius: 5px;
+          background-color: rgb(255 255 255 / .25)
+        }
+        *::-webkit-scrollbar-thumb:hover {
+          border-radius: 5px;
+          background-color: rgb(255 255 255 / .4)
+        }
+        *::-webkit-scrollbar-thumb:active {
+          border-radius: 5px;
+          background-color: rgb(255 255 255 / .75)
+        }
+
         html,
         body {
           width: 100%;

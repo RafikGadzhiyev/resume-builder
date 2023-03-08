@@ -8,7 +8,8 @@ import styled from '@emotion/styled'
 import { BaseButton, FormTypeIconContainer } from '../elements/styledElements';
 import { Timer } from './Timer';
 import { VerificationCodeBlock } from './VerificationCodeBlock';
-import { ResetUser } from '../state/slices/auth.slice';
+import { CheckVerificationCode, ResetUser } from '../state/slices/auth.slice';
+import { ErrorSnackBar } from './SnackBars';
 
 const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -53,6 +54,7 @@ const ResendButton = styled.button`
     justify-content: center;
     font-size: .8rem;
     transition: 300ms ease;
+    gap: .25rem;
 
     &:not(:disabled):hover {
         // box-shadow: 0 0 10px #0FFF13;
@@ -105,6 +107,7 @@ export const VerificationCode = () => {
     const { user_id } = useParams();
     const navigate = useNavigate();
     const userData = useSelector((store: RootState) => store.authReducer.user);
+    const error = useSelector((store: RootState) => store.authReducer.error);
     const oneTime = React.useRef(1);
     const cellsForm = React.useRef<HTMLFormElement>(null);
     const totalInputs = React.useRef<number>(-1);
@@ -137,6 +140,19 @@ export const VerificationCode = () => {
         }
     }
 
+    const resendCode = () => {
+        setTimer(prev => prev * 2);
+        fetch(
+            `${SERVER_BASE_URL}/verification/send_code/${user_id}`
+        )
+        // reseting all inputs
+        if (cellsForm.current) {
+            for (let i = 1; i <= totalInputs.current; ++i) {
+                cellsForm.current[`cell-${i}`].value = ''
+            }
+        }
+    }
+
     React.useEffect(() => {
         if (cellsForm.current && totalInputs.current === -1) {
             totalInputs.current = 0;
@@ -156,6 +172,9 @@ export const VerificationCode = () => {
     }, [user_id])
 
     return <VerificationContainer>
+        <ErrorSnackBar
+            message={error || ''}
+        />
         <VerificationNotification>
             <EmailIcon src={EnvelopIcon} alt="Envelop icon" />
             <span>We have sent to your email <EmailText>{userData?.email}</EmailText> a verification code</span>
@@ -174,12 +193,7 @@ export const VerificationCode = () => {
                 <ResendButton
                     disabled={!isResendAvailable}
                     type='button'
-                    onClick={() => {
-                        setTimer(prev => prev * 2);
-                        fetch(
-                            `${SERVER_BASE_URL}/verification/send_code/${user_id}`
-                        )
-                    }}
+                    onClick={() => resendCode()}
                 >
                     Resend code <img src={RepeatIcon} alt='Repeat icon' />
                 </ResendButton>
@@ -188,11 +202,8 @@ export const VerificationCode = () => {
                 type='button'
                 disabled={!isFull}
                 onClick={() => {
-                    fetch(`${SERVER_BASE_URL}/verification/check_code/${code.current}`)
-                        .then(response => {
-                            response.json()
-                                .then(result => navigate('/profile'))
-                        })
+                    dispatch(CheckVerificationCode(code.current))
+                        .then(response => response.meta.requestStatus === 'fulfilled' && navigate('/profile'))
                 }}
             >
                 Check code
@@ -203,7 +214,6 @@ export const VerificationCode = () => {
             >
                 Login via another email
             </BackToLogin>
-            {/* <BackToLogin href='#' onClick={() => ResetUser()}>Login via another email</BackToLogin> */}
         </VerificationForm>
     </VerificationContainer>
 }

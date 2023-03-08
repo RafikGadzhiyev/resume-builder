@@ -21,12 +21,14 @@ export const ProtectedRoute = () => {
                     if (response.meta.requestStatus === 'rejected') {
                         navigate('/auth');
                     } else {
+                        // navigate(<Outlet />) //! try to change that
                         navigate('/profile')
                     }
                 })
         } else {
             // if(userData.)
         }
+        console.log(1);
     }, [])
 
     // React.useEffect(() => {

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { motion } from 'framer-motion'
 
-export const AuthForm = styled(motion.form)`
+export const Form = styled(motion.form)`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +26,7 @@ export const AuthForm = styled(motion.form)`
 
 `;
 
-export const AuthInput = styled.input`
+export const Input = styled.input`
     all: unset;
     border-radius: 10px;
     text-align: left;
@@ -151,6 +151,6 @@ export const FormTypeIconContainer = styled.div`
 `;
 
 export const FormTypeIcon = styled.img`
-width: 100%;
-height: 100%;
+    width: 100%;
+    height: 100%;
 `;

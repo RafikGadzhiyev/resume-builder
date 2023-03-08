@@ -5,9 +5,9 @@ import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
 import { FormType } from './FormType'
 import {
-    AuthForm,
+    Form,
     FormTitle,
-    AuthInput,
+    Input,
     FormText,
     RedirectButton,
     PasswordContainer,
@@ -73,7 +73,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
         }
     }
 
-    return <AuthForm
+    return <Form
         ref={FormRef}
         initial={{
             x: 300,
@@ -101,7 +101,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             isValid={errors[0]}
             message={'Please, enter your fullname!'}
         >
-            <AuthInput
+            <Input
                 type='text'
                 placeholder='Full name'
                 name='full_name'
@@ -111,7 +111,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             isValid={errors[1]}
             message={'This email is invalid!'}
         >
-            <AuthInput
+            <Input
                 type='email'
                 placeholder='Email'
                 name='email'
@@ -123,7 +123,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
         >
 
             <PasswordContainer>
-                <AuthInput
+                <Input
                     type={isOpened ? 'text' : 'password'}
                     placeholder='Password'
                     name='password'
@@ -140,7 +140,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
                 </ShowPaswordButton>
             </PasswordContainer>
             <PasswordContainer>
-                <AuthInput
+                <Input
                     type={isOpened ? 'text' : 'password'}
                     placeholder='Confirm pasword'
                     name='confirm_password'
@@ -172,5 +172,5 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
                 onClick={() => setForm(() => 'signin')}
             >Log in</RedirectButton>
         </FormText>
-    </AuthForm>
+    </Form>
 }

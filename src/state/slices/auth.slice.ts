@@ -91,7 +91,7 @@ export const RetrieveUser = createAsyncThunk(
                 throw new Error("Token does not exist!")
             }
             const data = await response.json();
-            return data.data;
+            return data.payload;
         } catch (err: any) {
             if (!err.response) {
                 throw err
@@ -101,6 +101,23 @@ export const RetrieveUser = createAsyncThunk(
     }
 )
 
+export const CheckVerificationCode = createAsyncThunk(
+    "user/check_verification_code",
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${SERVER_BASE_URL}/verification/check_code/${payload}`);
+            if (!response.ok) {
+                throw new Error("Token does not exist!")
+            }
+            return true
+        } catch (err: any) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
 
 const AuthSlice = createSlice({
     name: "auth-slice",
@@ -170,6 +187,24 @@ const AuthSlice = createSlice({
             (state) => {
                 state.isLoading = false;
                 state.error = "Error ocured!"
+            }
+        ).addCase(
+            CheckVerificationCode.pending,
+            (state) => {
+                state.isLoading = true
+                state.error = null;
+            }
+        ).addCase(
+            CheckVerificationCode.fulfilled,
+            (state) => {
+                state.isLoading = false;
+                state.error = null;
+            }
+        ).addCase(
+            CheckVerificationCode.rejected,
+            (state) => {
+                state.isLoading = false;
+                state.error = "Validation code is not correct! check mail and try again!"
             }
         )
     }

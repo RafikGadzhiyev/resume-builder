@@ -6,7 +6,7 @@ export const useFocus = <T>(reference: React.MutableRefObject<T>) => {
     React.useEffect(() => {
         document.onclick = () => {
             if (document.activeElement === reference.current) {
-                setCorrectFocus(() => true)
+                setCorrectFocus(prev => !prev)
             } else {
                 setCorrectFocus(() => false)
             }

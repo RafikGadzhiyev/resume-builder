@@ -6,9 +6,9 @@ import eyeClosed from './../assets/icons/eye_closed.svg';
 import eyeOpened from './../assets/icons/eye_opened.svg';
 import { FormType } from './FormType';
 import {
-    AuthForm,
+    Form,
     FormTitle,
-    AuthInput,
+    Input,
     PasswordContainer,
     ShowPaswordButton,
     FormText,
@@ -74,7 +74,7 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
         }
     }, [])
 
-    return <AuthForm
+    return <Form
         ref={FormRef}
         initial={{
             x: -200,
@@ -105,7 +105,7 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
             isValid={errors[0]}
             message={'This email is invalid!'}
         >
-            <AuthInput
+            <Input
                 type='email'
                 placeholder='Email'
                 name='email'
@@ -117,7 +117,7 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
         >
 
             <PasswordContainer>
-                <AuthInput
+                <Input
                     type={isOpened ? 'text' : 'password'}
                     placeholder='Password'
                     name='password'
@@ -128,8 +128,14 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
                 >
                     {
                         isOpened ?
-                            <img src={eyeOpened} alt="Opened eye" /> :
-                            <img src={eyeClosed} alt="Closed eye" />
+                            <img
+                                src={eyeOpened}
+                                alt="Opened eye"
+                            /> :
+                            <img
+                                src={eyeClosed}
+                                alt="Closed eye"
+                            />
                     }
                 </ShowPaswordButton>
             </PasswordContainer>
@@ -144,5 +150,5 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
             Don't have a account? <RedirectButton
                 onClick={() => setForm(() => 'signup')}
             >Create an account</RedirectButton></FormText>
-    </AuthForm>
+    </Form>
 }

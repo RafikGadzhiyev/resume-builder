@@ -4,6 +4,7 @@ import { Auth } from './pages/AuthPage';
 import { ProtectedRoute } from './pages/ProtectedRoute';
 import { VerificationCode } from './components/VerificationCode';
 import { Profile } from './components/Profile';
+import { CreateResume } from './components/CreateResume';
 
 function App() {
 
@@ -29,6 +30,10 @@ function App() {
               <Route
                 path='/auth'
                 element={<Auth />}
+              />
+              <Route
+                path='/resume/new'
+                element={<CreateResume />}
               />
             </Route>
           </Routes>
