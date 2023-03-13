@@ -154,3 +154,8 @@ export const FormTypeIcon = styled.img`
     width: 100%;
     height: 100%;
 `;
+
+
+export const StepTitle = styled.h4`
+    text-align: center;
+`
