@@ -87,7 +87,7 @@ export default function RouteLayout({
     } else if (isTokenExist === "exists" && pathname === "/p/auth" && user) {
       router.push(`/p/verification/${user.id}`);
     }
-  }, [user, isTokenExist, pathname, router]);
+  }, [user, isTokenExist, router]);
   return (
     <ThemeProvider theme={_.merge(Themes[theme], MUITheme)}>
       <Global styles={DynamicGlobalStyles} />
