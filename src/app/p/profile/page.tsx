@@ -146,7 +146,6 @@ const WelcomeText = styled.span`
     display: none;
   }
 `;
-
 export default function Profile() {
   const [successState, setSuccessState] = React.useState<null | string>(null);
   const [errorState, setErrorState] = React.useState<null | string>(null);
@@ -173,55 +172,59 @@ export default function Profile() {
   }, [user, dispatch]);
 
   return (
-    <Container>
-      <SuccessSnackBar message={"Test"} />
-      {successState && <SuccessSnackBar message={successState} />}
-      {errorState && <ErrorSnackBar error={errorState} />}
-      <Header>
-        <ProfileImageContainer>
-          <ProfileImage src={TestProfileImage.src} />
-        </ProfileImageContainer>
-        <ProfileNameContainer>
-          <WelcomeText>Welcome back, {user?.full_name}</WelcomeText>
-        </ProfileNameContainer>
-        <ThemeSwitchBlock>
-          <ThemeSwitch ref={PaletteRef} as={ThemeSwitch}>
-            Change theme
-          </ThemeSwitch>
-          <AnimatePresence>
-            {currentPaletteFocus && <Palette />}
-          </AnimatePresence>
-        </ThemeSwitchBlock>
-      </Header>
-      <ContentContainer>
-        <TopBar>
-          <span>Your resumes:</span>
-          <Filter updateState={updateState} sort={sort} reset={reset} />
-        </TopBar>
-        <Resumes>
-          {isLoading ? (
-            <Loading>Reading all resumes</Loading>
-          ) : (
-            <>
-              {state.map((res: any) => (
-                <UserResume
-                  key={res._id}
-                  id={res._id}
-                  title={res.title}
-                  name={res.name}
-                  surname={res.surname}
-                  created={res.createdAt}
-                  setErrorState={setErrorState}
-                  setSuccessState={setSuccessState}
-                />
-              ))}
-              <CreateResumeButton onClick={() => router.push("/p/resume/new")}>
-                Create new Resume
-              </CreateResumeButton>
-            </>
-          )}
-        </Resumes>
-      </ContentContainer>
-    </Container>
+    <>
+      <Container>
+        <SuccessSnackBar message={"Test"} />
+        {successState && <SuccessSnackBar message={successState} />}
+        {errorState && <ErrorSnackBar error={errorState} />}
+        <Header>
+          <ProfileImageContainer>
+            <ProfileImage src={TestProfileImage.src} />
+          </ProfileImageContainer>
+          <ProfileNameContainer>
+            <WelcomeText>Welcome back, {user?.full_name}</WelcomeText>
+          </ProfileNameContainer>
+          <ThemeSwitchBlock>
+            <ThemeSwitch ref={PaletteRef} as={ThemeSwitch}>
+              Change theme
+            </ThemeSwitch>
+            <AnimatePresence>
+              {currentPaletteFocus && <Palette />}
+            </AnimatePresence>
+          </ThemeSwitchBlock>
+        </Header>
+        <ContentContainer>
+          <TopBar>
+            <span>Your resumes:</span>
+            <Filter updateState={updateState} sort={sort} reset={reset} />
+          </TopBar>
+          <Resumes>
+            {isLoading ? (
+              <Loading>Reading all resumes</Loading>
+            ) : (
+              <>
+                {state.map((res: any) => (
+                  <UserResume
+                    key={res._id}
+                    id={res._id}
+                    title={res.title}
+                    name={res.name}
+                    surname={res.surname}
+                    created={res.createdAt}
+                    setErrorState={setErrorState}
+                    setSuccessState={setSuccessState}
+                  />
+                ))}
+                <CreateResumeButton
+                  onClick={() => router.push("/p/resume/new")}
+                >
+                  Create new Resume
+                </CreateResumeButton>
+              </>
+            )}
+          </Resumes>
+        </ContentContainer>
+      </Container>
+    </>
   );
 }

@@ -11,9 +11,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <title>Main Page</title>
-      </head>
       <body>
         <Provider store={store}>{children}</Provider>
       </body>

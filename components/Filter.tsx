@@ -94,7 +94,7 @@ export const Filter: React.FC<IProps> = ({ sort, updateState, reset }) => {
   React.useEffect(() => {
     updateState(resumes);
     setCurrentSort(() => "Select sort");
-  }, [resumes, updateState]);
+  }, [resumes]);
 
   return (
     <FilterBlock>

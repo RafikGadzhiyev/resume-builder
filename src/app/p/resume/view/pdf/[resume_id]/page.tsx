@@ -51,22 +51,14 @@ export default function PDFView() {
   const queries = useSearchParams();
   const one = React.useRef(1);
 
-  // React.useEffect(() => {
-  //   if (one.current) {
-  //     one.current--;
-  //     fetch(`${SERVER_BASE_URL}/resume/get?id=${resume_id}`).then(
-  //       (response) => {
-  //         response.json().then((data) => setResume(() => data.resume));
-  //       }
-  //     );
-  //   }
-  // }, [resume_id]);
-
   React.useEffect(() => {
-    if (resumes.length === 0 && user) {
-      dispatch(ReadAllUserResumes(user.id));
+    if (one.current) {
+      one.current--;
+      fetch(`${SERVER_BASE_URL}/resume?id=${resume_id}`).then((response) => {
+        response.json().then((data) => setResume(() => data.resume));
+      });
     }
-  }, [dispatch]);
+  }, [resume_id]);
 
   React.useEffect(() => {
     if (resumes.length) {

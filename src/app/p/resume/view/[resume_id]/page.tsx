@@ -141,11 +141,9 @@ export default function ResumeView() {
     if (resumes.length === 0) {
       if (one.current) {
         one.current--;
-        fetch(`${SERVER_BASE_URL}/resume/get?id=${resume_id}`).then(
-          (response) => {
-            response.json().then((data) => setOpenedResume(() => data.resume));
-          }
-        );
+        fetch(`${SERVER_BASE_URL}/resume?id=${resume_id}`).then((response) => {
+          response.json().then((data) => setOpenedResume(() => data.resume));
+        });
       }
     } else {
       setOpenedResume(
