@@ -37,13 +37,13 @@ const Container = styled.div`
   justify-content: flex-start;
   height: 100vh;
   flex-direction: column;
-  padding: 1rem 17rem;
   gap: 1rem;
+  
 `;
 
 const Steps = styled.div`
   background-color: ${(styles: any) => styles.theme.secondaryColor};
-  width: 100%;
+  width: 1140px;
   border-radius: 5px;
   padding-block: 1rem;
   min-height: 350px;
@@ -53,6 +53,11 @@ const Steps = styled.div`
   overflow: hidden;
   position: relative;
   padding-bottom: 1.5rem;
+  
+  @media screen and (max-width: 1140px) {
+    width: 720px;
+  }
+  
 `;
 
 const Buttons = styled.div`

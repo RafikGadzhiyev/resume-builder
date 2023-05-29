@@ -11,6 +11,9 @@ import {
   checkPasswordSync,
   isInputEmpty,
 } from "../utils/isValid";
+import {
+  GenerateNumberFromTheRange
+} from '../utils/generators'
 import { OPACITY_TO_HEX } from "../consts/color";
 
 describe("Convert methods should convert properly", () => {
@@ -103,3 +106,13 @@ describe("Validation methods should check validation properly", () => {
     expect(isInputEmpty(input)).toEqual(false);
   });
 });
+
+describe("Generation methods", () => {
+  for(let i = 0; i < 100; i++){
+    it('Should generate number between 1 to 100 (not inclusive)', () =>{
+      let randomNumber = GenerateNumberFromTheRange(1, 100);
+      expect(randomNumber).toBeGreaterThanOrEqual(1);
+      expect(randomNumber).toBeLessThan(100);
+    })
+  }
+})

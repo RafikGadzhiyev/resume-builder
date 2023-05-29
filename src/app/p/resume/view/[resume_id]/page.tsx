@@ -2,7 +2,7 @@
 
 import {
   FaChevronLeft,
-  FaEnvelope,
+  FaEnvelope, FaFilePdf,
   FaLocationArrow,
   FaPhone,
 } from "react-icons/fa";
@@ -39,6 +39,15 @@ const Container = styled.div`
   gap: 1rem;
   overflow-x: hidden;
   color: ${(styles: any) => styles.theme.textColor};
+  
+  @media screen and (max-width: 900px){
+    grid-template-columns: 30% auto;
+  } 
+  @media screen and (max-width: 625px){
+    //grid-template-columns: 40% auto;
+    grid-template-columns: 1fr;
+  }
+  
 `;
 
 const PersonalDataBlock = styled(motion.div)`
@@ -59,11 +68,15 @@ const MainDataBlock = styled(motion.div)`
   padding: 0.5rem;
   max-height: inherit;
   overflow-y: auto;
+  @media screen and (max-width: 625px) {
+    grid-row: 1;
+  }
 `;
 
 const Title = styled.h1`
   text-align: center;
   font-size: 2rem;
+  margin-bottom: .5rem
 `;
 
 const GoBackLink = styled(Link)`
@@ -124,6 +137,12 @@ const DPI = styled.div`
   left: -100%;
   top: -100%;
 `;
+
+const PDFButton = styled.button`
+  all: unset;
+  cursor: pointer;
+  font-size: 2rem;
+`
 
 export default function ResumeView() {
   const router = useRouter();
@@ -217,7 +236,7 @@ export default function ResumeView() {
           }}
         >
           {/*Change styles*/}
-          <button
+          <PDFButton
             onClick={() => {
               let personalHeight = personalRef.current?.scrollHeight,
                 mainHeight = mainRef.current?.scrollHeight;
@@ -227,8 +246,8 @@ export default function ResumeView() {
               router.push(`/p/resume/view/pdf/${resume_id}?height=${height}`);
             }}
           >
-            Open pdf format
-          </button>
+            <FaFilePdf/>
+          </PDFButton>
           <Title>{openedResume.title}</Title>
           <OwnerData>
             <Wrapper>

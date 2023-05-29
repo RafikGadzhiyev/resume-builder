@@ -23,6 +23,13 @@ const AuthWrapper = styled.div`
   background-color: ${(styles: any) => styles.theme.secondaryColor};
   overflow: hidden;
   position: relative;
+  
+  @media screen and (max-width: 575px) {
+    border-radius: 0;
+    width: 100%;
+    margin-inline: .25rem;
+  }
+  
 `;
 
 const FormsContainer = styled.div`
@@ -31,15 +38,6 @@ const FormsContainer = styled.div`
   height: 100%;
   transition: 300ms ease;
   padding-bottom: 3.5rem;
-`;
-
-const ExternalAuthsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  height: 100%;
-  position: relative;
 `;
 
 export default function Auth() {

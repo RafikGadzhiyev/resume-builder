@@ -4,6 +4,14 @@ import styled from "@emotion/styled";
 const VerificationFieldsContainer = styled.div`
   display: flex;
   gap: 1rem;
+  
+  @media screen and (max-width: 920px) {
+    margin-inline: .5rem;
+  }
+  
+  @media screen and (max-width: 500px){
+    gap: .25rem;
+  }
 `;
 
 const VerificationField = styled.input`
@@ -29,6 +37,21 @@ const VerificationField = styled.input`
   &:focus {
     border-color: rgb(241 241 241 / 0.75);
   }
+  
+  @media screen and (max-width: 920px){
+    width: 100%;
+  }
+  
+  @media screen and (max-width: 650px) {
+    font-size: 2.5rem;
+  }
+  
+  @media screen and (max-width: 400px) {
+    font-size: 2rem;
+    width: 100%;
+    padding: .25rem 0;
+  }
+  
 `;
 
 interface IBlock {

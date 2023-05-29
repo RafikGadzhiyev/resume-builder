@@ -32,6 +32,15 @@ const VerificationContainer = styled.div`
 
 const VerificationNotification = styled(FormTypeIconContainer)`
   transform: rotate(-3.61deg);
+  
+  @media screen and (max-width: 650px) {
+    font-size: 15px;
+    height: auto;
+  }
+  @media screen and (max-width: 400px) {
+    font-size: 10px;
+  }
+  
 `;
 
 const VerificationForm = styled.form`

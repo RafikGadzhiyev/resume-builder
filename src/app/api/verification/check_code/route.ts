@@ -21,6 +21,11 @@ export const GET = async (req: Request, res: NextApiResponse) => {
       );
     }
 
+    // @ts-ignore
+    cookies().set("verification_code", "", {
+      maxAge: -1,
+    });
+
     return new NextResponse(
       JSON.stringify({
         message: "Code is valid!\nRedirecting to your profile",

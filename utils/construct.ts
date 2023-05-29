@@ -8,8 +8,6 @@ import {
 import { IDescription } from "../interfaces/steps.interface";
 import { SanityDocument } from "@sanity/client";
 import { ILogin, IUserMutation } from "../interfaces/auth.interface";
-import { Simulate } from "react-dom/test-utils";
-import doubleClick = Simulate.doubleClick;
 
 export const ConstructDataForRecordResume = (
   payload: IRecordResumeRequest

@@ -1,5 +1,9 @@
 import { shuffle } from "lodash";
 
+export const GenerateNumberFromTheRange = (start: number, end: number): number => {
+  return Math.floor(Math.random() * (end - start) + start);
+}
+
 export const GenerateVerificationCode = (
   isLettersIncludes: boolean,
   amount: number
@@ -17,7 +21,7 @@ export const GenerateVerificationCode = (
   const code: string[] = [];
 
   for (let i = 0; i < amount; ++i) {
-    code.push(validSymbols[Math.floor(Math.random() * validSymbols.length)]);
+    code.push(validSymbols[GenerateNumberFromTheRange(0, code.length)]);
   }
 
   return shuffle(code).join("");

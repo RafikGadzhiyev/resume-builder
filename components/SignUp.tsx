@@ -1,10 +1,10 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LockIcon from "./../assets/icons/lock.svg";
 import eyeClosed from "./../assets/icons/eye_closed.svg";
 import eyeOpened from "./../assets/icons/eye_opened.svg";
 import { FormType } from "./FormType";
-import { AppDispatch } from "../state/store";
+import { AppDispatch, RootState } from "../state/store";
 import { SignupUser } from "../state/reducers/auth.reducer";
 import { FormInput } from "./FormInput";
 import { checkEmail, checkPassword, checkPasswordSync } from "../utils/isValid";
@@ -34,6 +34,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
   const [isOpened, setIsOpened] = React.useState<boolean>(false);
   const [errors, setErrors] = React.useState<Array<1 | 0>>([1, 1, 1]);
   const FormRef = React.useRef<HTMLFormElement | null>(null);
+  const user = useSelector((store: RootState) => store.authReducer.user);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -84,10 +85,16 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             fullname: full_name.value,
             password: password.value,
           })
-        ).then(() => router.push("/p/profile"));
+        );
       }
     }
   };
+
+  React.useEffect(() => {
+    if (user !== null) {
+      router.replace("/p/profile");
+    }
+  }, [user]);
 
   return (
     <Form

@@ -24,6 +24,11 @@ export const Input = styled.input`
   &::placeholder {
     color: rgb(235 235 245 / 0.6);
   }
+  
+  @media screen and (max-width: 360px) {
+    min-width: 0;
+    width: 100%;
+  }
 `;
 
 export const StepInput = styled(Input)`

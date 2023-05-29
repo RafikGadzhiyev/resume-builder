@@ -98,10 +98,7 @@ export const LoginForm: React.FC<IProps> = ({ setForm }) => {
         opacity: 0,
       }}
     >
-      {/* {
-            auth.error && */}
       <ErrorSnackBar error={auth.error} />
-      {/* } */}
       <FormType>
         <FormTypeIcon src={KeyIcon.src} />
       </FormType>

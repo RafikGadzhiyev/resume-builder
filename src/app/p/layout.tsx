@@ -86,6 +86,8 @@ export default function RouteLayout({
       router.push("/p/auth");
     } else if (isTokenExist === "exists" && pathname === "/p/auth" && user) {
       router.push(`/p/verification?user_id=${user.id}`);
+    } else if (isTokenExist === "exists" && pathname === "/p" && user) {
+      router.replace("/p/profile");
     }
   }, [user, isTokenExist, router]);
   return (

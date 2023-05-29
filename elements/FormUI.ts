@@ -11,7 +11,7 @@ export const Form = styled(motion.form)`
   margin: auto auto 2.5rem auto;
   text-align: center;
   position: relative;
-
+      
   &::before {
     content: "";
     position: absolute;
@@ -40,6 +40,10 @@ export const FormTitle = styled.h2`
 export const FormText = styled.span`
   color: rgb(255 255 255 / 0.5);
   font-size: 0.75rem;
+  @media screen and (max-width: 300px){
+        display: flex;
+        flex-direction: column;
+  }
 `;
 
 export const FormTypeIcon = styled.img`
