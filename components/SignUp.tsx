@@ -23,6 +23,8 @@ import {
   RedirectButton,
   ShowPasswordButton,
 } from "../elements/Buttons";
+import { router } from "next/client";
+import { useRouter } from "next/navigation";
 
 interface IProps extends React.PropsWithChildren {
   setForm: React.Dispatch<React.SetStateAction<"signin" | "signup">>;
@@ -33,6 +35,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
   const [errors, setErrors] = React.useState<Array<1 | 0>>([1, 1, 1]);
   const FormRef = React.useRef<HTMLFormElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   const createProfile = () => {
     if (FormRef.current) {
@@ -81,7 +84,7 @@ export const Registration: React.FC<IProps> = ({ setForm }) => {
             fullname: full_name.value,
             password: password.value,
           })
-        );
+        ).then(() => router.push("/p/profile"));
       }
     }
   };

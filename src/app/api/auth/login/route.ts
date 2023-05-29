@@ -1,11 +1,10 @@
-import { NextResponse } from "next/server";
-import { NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { compareSync } from "bcrypt";
 import { ILogin } from "../../../../../interfaces/auth.interface";
 import { sign } from "jsonwebtoken";
 import { cookies } from "next/headers";
-export async function POST(req: Request, res: NextApiResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const parsedRequest = await req.json();
     const CMS_BASE_URL = process.env.SANITY_BASE_URL;
@@ -60,11 +59,6 @@ export async function POST(req: Request, res: NextApiResponse) {
       },
       { status: 200 }
     );
-    // response.cookies.set("jwt", accessToken, {
-    //   secure: true,
-    //   httpOnly: true,
-    //   maxAge: 4 * 60 * 60 * 1000,
-    // });
 
     // @ts-ignore
     cookies().set("jwt", accessToken, {

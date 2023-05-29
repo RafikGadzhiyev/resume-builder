@@ -17,3 +17,12 @@ export interface IAuth {
 export interface ISignup extends IAuth {
   fullname: string;
 }
+
+export interface IUserMutation {
+  _type: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  age: number;
+  password: string;
+}

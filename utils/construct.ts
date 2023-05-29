@@ -6,6 +6,10 @@ import {
   RequestData,
 } from "../interfaces/resume.interface";
 import { IDescription } from "../interfaces/steps.interface";
+import { SanityDocument } from "@sanity/client";
+import { ILogin, IUserMutation } from "../interfaces/auth.interface";
+import { Simulate } from "react-dom/test-utils";
+import doubleClick = Simulate.doubleClick;
 
 export const ConstructDataForRecordResume = (
   payload: IRecordResumeRequest
@@ -67,5 +71,20 @@ export const ConstructDataForRecordResume = (
       },
       achievements: work.achievements.map((a) => a.value),
     })),
+  };
+};
+
+export const ConstructDataFromSanityDocument = (
+  document: SanityDocument<IUserMutation>
+): ILogin => {
+  return {
+    id: document._id,
+    given_name: document.first_name,
+    age: document.age,
+    email: document.email,
+    created_at: Number(new Date(document._createdAt)),
+    full_name: document.first_name + " " + (document.last_name || ""),
+    exp: Number(new Date(document._createdAt)) + 4 * 60 * 60 * 1000,
+    family_name: document.last_name || "",
   };
 };
