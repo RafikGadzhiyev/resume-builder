@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { motion } from "framer-motion";
-import { Input } from "./Inputs";
-import { StepRadio } from "./StepsUI";
+import {motion} from "framer-motion";
+import {Input} from "./Inputs";
+import {StepRadio} from "./StepsUI";
 
 export const Form = styled(motion.form)`
   display: flex;
@@ -11,21 +11,19 @@ export const Form = styled(motion.form)`
   margin: auto auto 2.5rem auto;
   text-align: center;
   position: relative;
-      
+
   &::before {
     content: "";
     position: absolute;
     bottom: -0.5rem;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(
-      to right,
-      transparent 5%,
-      rgb(61 61 65 / 1),
-      ${(styles: any) => styles.theme.textColor},
-      rgb(61 61 65 / 1),
-      transparent 95%
-    );
+    background: linear-gradient(to right,
+    transparent 5%,
+    rgb(61 61 65 / 1),
+    ${(styles: any) => styles.theme.textColor},
+    rgb(61 61 65 / 1),
+    transparent 95%);
     width: 100%;
     display: block;
     height: 1px;
@@ -40,9 +38,9 @@ export const FormTitle = styled.h2`
 export const FormText = styled.span`
   color: rgb(255 255 255 / 0.5);
   font-size: 0.75rem;
-  @media screen and (max-width: 300px){
-        display: flex;
-        flex-direction: column;
+  @media screen and (max-width: 300px) {
+    display: flex;
+    flex-direction: column;
   }
 `;
 
@@ -53,6 +51,7 @@ export const FormTypeIcon = styled.img`
 
 export const PasswordContainer = styled.div`
   position: relative;
+
   &:not(:last-of-type) {
     margin-bottom: 0.8rem;
   }
@@ -84,11 +83,24 @@ export const StepForm = styled(Form)`
   margin-bottom: 0;
   display: grid;
   width: 100%;
-  padding: 0 5rem 0.5rem;
+  padding: 0 1rem 0.5rem;
   align-items: center;
-  grid-template-columns: 0.5fr 1.5fr;
+  grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(auto-fill, 1fr);
+
   &::before {
     display: none;
   }
+
+  @media screen and (max-width: 710px) {
+    grid-template-columns: repeat(4, 1fr);
+    place-items: end;
+  }
+  @media screen and (max-width: 485px) {
+    grid-template-columns: repeat(6, 1fr);
+    place-items: center;
+      padding: 0 0.2rem 0.5rem;
+      
+  }
+
 `;

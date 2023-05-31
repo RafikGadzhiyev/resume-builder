@@ -8,7 +8,7 @@ export const StepContainer = styled(motion.div)`
   align-items: center;
   gap: 1rem;
   width: 100%;
-  margin-bottom: 5rem;
+  padding-bottom: 5rem;
   max-height: var(--maxHeight);
   overflow: auto;
   overflow-x: hidden;
@@ -16,6 +16,11 @@ export const StepContainer = styled(motion.div)`
 
 export const StepTitle = styled.h4`
   text-align: center;
+  
+  @media screen and (max-width: 480px){
+	font-size: 15px;
+  }
+  
 `;
 
 export const StepDescription = styled.textarea`

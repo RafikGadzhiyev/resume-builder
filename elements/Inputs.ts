@@ -7,7 +7,7 @@ export const Input = styled.input`
   background-color: ${(styles: any) => styles.theme.primaryColor};
   text-indent: 1rem;
   padding: 0.5rem 1rem 0.5rem 0;
-  min-width: 360px;
+  width: 100%;
   box-sizing: border-box;
   transition: 300ms ease;
   color: ${(styles: any) => styles.theme.textColor};
@@ -24,11 +24,12 @@ export const Input = styled.input`
   &::placeholder {
     color: rgb(235 235 245 / 0.6);
   }
-  
+
   @media screen and (max-width: 360px) {
     min-width: 0;
     width: 100%;
   }
+
 `;
 
 export const StepInput = styled(Input)`

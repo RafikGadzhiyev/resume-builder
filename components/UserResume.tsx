@@ -10,7 +10,6 @@ import {
   DuplicateResume as DuplicateResumeReducer,
 } from "../state/reducers/resume.reducer";
 import { motion } from "framer-motion";
-import { SuccessSnackBar } from "./SnackBars";
 import { ConvertOpacityToHEXRepresentation } from "../utils/convert";
 import { BaseButton } from "../elements/Buttons";
 import { useRouter } from "next/navigation";

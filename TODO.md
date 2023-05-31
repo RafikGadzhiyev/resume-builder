@@ -1,6 +1,6 @@
-TODOS:
+# TODOS:
 - Restyle components
-- Add adaptive styles for each page
+- Add adaptive styles for each page ***(half-job done)***
 - Optimize code
 - Add Error fallback
 - Add Loading fallback
@@ -11,8 +11,10 @@ TODOS:
 - Isolate hooks environment (pass state which hooks work with)
 - Optimize hooks
 - Update hooks (change events)
+- Set headers to all pages
+- Prevent error when deleting work description
 
-FUTURE FEATS:
+## FUTURE FEATS:
 - Add searching resume page
 - Add updating profile details
 - Add possibility to send messages via email

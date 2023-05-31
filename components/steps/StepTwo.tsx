@@ -16,14 +16,13 @@ import { updateResume } from "../../state/slices/resume.slice";
 import { Input } from "../../elements/Inputs";
 import { StepContainer, StepTitle } from "../../elements/StepsUI";
 
-const Container = styled(motion.div)``;
 
 const ContactForm = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem 0.5rem;
+  gap: 1rem 0.5rem;
   justify-content: space-between;
-  padding-inline: 5rem;
+  padding-inline: 1rem;
   margin-top: 2rem;
 `;
 
@@ -31,6 +30,7 @@ const ContactBlock = styled.div`
   display: flex;
   align-items: center;
   width: 48%;
+  gap: .5rem;
   justify-content: space-between;
 `;
 
