@@ -54,7 +54,6 @@ export const BaseButton = styled.button`
   font-weight: 600;
   width: fit-content;
   text-align: center;
-  //margin: 1rem auto auto;
   transition: 300ms ease;
 
   &:not(:disabled):hover {

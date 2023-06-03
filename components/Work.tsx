@@ -1,4 +1,4 @@
-import React from "react";
+import {useState, useEffect, useMemo, FC, PropsWithChildren} from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
@@ -40,21 +40,21 @@ const WorkInput = styled(Input)`
   }
 `;
 
-interface IProps extends React.PropsWithChildren {
+interface IProps extends PropsWithChildren {
   index: number;
 }
 
-export const Work: React.FC<IProps> = ({ index }) => {
+export const Work: FC<IProps> = ({ index }) => {
   const dispatch = useDispatch();
   const resume = useSelector(
     (store: RootState) => store.resumeReducer.currentResume
   );
-  const work = React.useMemo(() => resume.works[index], [resume.works, index]);
-  const [company, setCompany] = React.useState(work.company);
-  const [position, setPosition] = React.useState(work.position);
-  const [location, setLocation] = React.useState(work.location);
-  const [startDate, setStartDate] = React.useState(work.work_period.start);
-  const [endDate, setEndDate] = React.useState(work.work_period.end);
+  const work = useMemo(() => resume.works[index], [resume.works, index]);
+  const [company, setCompany] = useState(work.company);
+  const [position, setPosition] = useState(work.position);
+  const [location, setLocation] = useState(work.location);
+  const [startDate, setStartDate] = useState(work.work_period.start);
+  const [endDate, setEndDate] = useState(work.work_period.end);
 
   const [
     debouncedCompany,
@@ -79,7 +79,7 @@ export const Work: React.FC<IProps> = ({ index }) => {
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       updateResume({
         ...resume,

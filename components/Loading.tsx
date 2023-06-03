@@ -1,4 +1,4 @@
-import React from "react";
+import {FC, PropsWithChildren} from 'react';
 import { motion } from "framer-motion";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -20,7 +20,7 @@ const LoadingContainerStyles = {
   gap: "1rem",
 };
 
-export const Loading: React.FC<React.PropsWithChildren> = ({ children }) => {
+export const Loading: FC<PropsWithChildren> = ({ children }) => {
   return (
     <Box
       initial={{

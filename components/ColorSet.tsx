@@ -1,4 +1,4 @@
-import React from "react";
+import {FC} from "react";
 import type { ITheme } from "../interfaces/style.interface";
 import styled from "@emotion/styled";
 import { ThemeType } from "../types";
@@ -20,7 +20,7 @@ const Color = styled.div`
   width: 100%;
 `;
 
-export const ColorSet: React.FC<
+export const ColorSet: FC<
   Record<keyof ITheme, any> & { paletteName: ThemeType }
 > = ({ primaryColor, secondaryColor, paletteName }) => {
   const dispatch = useDispatch();

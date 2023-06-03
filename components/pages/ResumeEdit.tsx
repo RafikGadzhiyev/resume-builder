@@ -1,34 +1,22 @@
 "use client";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { AppDispatch, RootState } from "../../state/store";
-import { useDispatch, useSelector } from "react-redux";
-import React from "react";
-import {
-	checkEmail,
-	checkPhone,
-	isPropertyEmpty,
-} from "../../utils/isValid";
-import { emailRegEx, phoneRegEx } from "../../consts/regexs";
-import {
-	ReadAllUserResumes,
-	RecordResume,
-	UpdateResume,
-} from "../../state/reducers/resume.reducer";
-import { IResume } from "../../interfaces/resume.interface";
-import {
-	__INIT__,
-	changeResume,
-	updateStep,
-} from "../../state/slices/resume.slice";
-import { Loading } from "../Loading";
-import { ErrorSnackBar } from "../SnackBars";
-import { ResumeTitle } from "../ResumeTitle";
-import { StepIndicator } from "../stepIndicator/Indicator";
-import { STEPS } from "../../states/steps.state";
-import { FaTimes } from "react-icons/fa";
-import { BaseButton } from "../../elements/Buttons";
+import {KeyboardEvent, useCallback, useEffect, useState} from "react";
+import {useParams, usePathname, useRouter} from "next/navigation";
+import {useDispatch, useSelector} from "react-redux";
+import {checkEmail, checkPhone, isPropertyEmpty,} from "../../utils/isValid";
+import {ReadAllUserResumes, RecordResume, UpdateResume,} from "../../state/reducers/resume.reducer";
+import {Loading} from "../Loading";
+import {ErrorSnackBar} from "../SnackBars";
+import {ResumeTitle} from "../ResumeTitle";
+import {StepIndicator} from "../stepIndicator/Indicator";
+import {FaTimes} from "react-icons/fa";
+import {ConvertOpacityToHEXRepresentation} from "../../utils/convert";
+import {emailRegEx, phoneRegEx} from "../../consts/regexs";
+import {__INIT__, changeResume, updateStep,} from "../../state/slices/resume.slice";
+import {STEPS} from "../../consts/steps";
+import {BaseButton} from "../../elements/Buttons";
 import styled from "@emotion/styled";
-import { ConvertOpacityToHEXRepresentation } from "../../utils/convert";
+import {AppDispatch, RootState} from "../../state/store";
+import {IResume} from "../../interfaces/resume.interface";
 
 const Container = styled.div`
   --maxHeight: 75vh;
@@ -42,7 +30,7 @@ const Container = styled.div`
 
 const Steps = styled.div`
   background-color: ${(styles: any) => styles.theme.secondaryColor};
-  width: 100%;
+  width: 1040px;
   border-radius: 5px;
   padding-block: 1rem;
   min-height: 350px;
@@ -59,7 +47,7 @@ const Steps = styled.div`
   @media screen and (max-width: 725px) {
     width: 100%;
   }
-  
+
 `;
 
 const Buttons = styled.div`
@@ -102,7 +90,7 @@ const CreateResumeButton = styled(BaseButton)`
 const CancelButton = styled(BaseButton)`
   --backgroundColor: ${(styles: any) => styles.theme.primaryColor};
   --shadowColor: ${(styles: any) =>
-	styles.theme.primaryColor + ConvertOpacityToHEXRepresentation(50)};
+          styles.theme.primaryColor + ConvertOpacityToHEXRepresentation(50)};
 
   align-self: flex-start;
   margin: 0;
@@ -116,21 +104,22 @@ const CancelButton = styled(BaseButton)`
   font-size: 1.25rem;
   top: 0.5rem;
 `;
-export  function EditResume() {
-	const { resume_id } = useParams();
-	// const { pathname } = useLocation();
+
+export function EditResume() {
+	const {resume_id} = useParams();
 	const router = useRouter();
 	const pathname = usePathname();
 	const dispatch: AppDispatch = useDispatch();
 	const user = useSelector((store: RootState) => store.authReducer.user);
-	const { currentStep, currentResume, error, isLoading, resumes } = useSelector(
-		(store: RootState) => store.resumeReducer
-	);
-	const [validationError, setValidationError] = React.useState<null | string>(
-		null
-	);
-	const createResume = () => {
-		// name, surname, bio, location, gender, age, email, phoneNumber should not be empty and not valid
+	const {
+		currentStep,
+		currentResume,
+		error,
+		isLoading,
+		resumes
+	} = useSelector((store: RootState) => store.resumeReducer);
+	const [validationError, setValidationError] = useState<null | string>(null);
+	const createResume = useCallback(() => {
 		if (
 			isPropertyEmpty(currentResume.personalData.name) ||
 			isPropertyEmpty(currentResume.personalData.surname) ||
@@ -140,20 +129,16 @@ export  function EditResume() {
 			isPropertyEmpty(currentResume.extraData.bio) ||
 			isPropertyEmpty(currentResume.extraData.location)
 		) {
-			setValidationError(
-				() => "You have to write valida data on steps 1 and 2"
-			);
-			return false; // for right now
+			setValidationError(() => "You have to write valid data on steps 1 and 2");
+			return false;
 		}
 		if (
 			!checkEmail(currentResume.personalData.email, emailRegEx) ||
 			!checkPhone(currentResume.personalData.phoneNumber, phoneRegEx)
 		) {
 			setValidationError(() => "Invalid data");
-			return false; // for right now
+			return false;
 		}
-		const constructedData = {};
-		// console.log(JSON.stringify(resume, null, 4));
 		if (user) {
 			dispatch(
 				RecordResume({
@@ -163,9 +148,20 @@ export  function EditResume() {
 				})
 			).then(() => router.push("/p/profile"));
 		}
-	};
+	}, [
+		currentResume.personalData.name,
+		currentResume.personalData.surname,
+		currentResume.personalData.phoneNumber,
+		currentResume.personalData.gender,
+		currentResume.personalData.email,
+		currentResume.extraData.bio,
+		currentResume.extraData.location,
+		user,
+		dispatch,
+		router
+	]);
 
-	const updateResume = (resumeId: string, newData: IResume, userId: string) => {
+	const updateResume = useCallback((resumeId: string, newData: IResume, userId: string) => {
 		dispatch(
 			UpdateResume({
 				resumeId: resumeId || "",
@@ -176,16 +172,17 @@ export  function EditResume() {
 				},
 			})
 		).then(() => router.push("/p/profile"));
-	};
-	const preventTab = (e: React.KeyboardEvent<HTMLDivElement>) => {
+	}, [dispatch, router])
+
+	const preventTab =useCallback( (e: KeyboardEvent<HTMLDivElement>) => {
 		const key = e.key;
 		if (key === "Tab") {
 			e.preventDefault();
 			return;
 		}
-	};
+	}, []);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (user) {
 			if (resume_id === undefined) {
 				dispatch(
@@ -209,13 +206,13 @@ export  function EditResume() {
 	return (
 		<Container>
 			{isLoading && <Loading> Creating new resume</Loading>}
-			<ErrorSnackBar error={error} />
-			<ErrorSnackBar error={validationError} />
-			<ResumeTitle />
-			<StepIndicator totalSteps={STEPS.length} />
+			<ErrorSnackBar error={error}/>
+			<ErrorSnackBar error={validationError}/>
+			<ResumeTitle/>
+			<StepIndicator totalSteps={STEPS.length}/>
 			<Steps>
 				<CancelButton onClick={() => router.replace("/p/profile")}>
-					<FaTimes />
+					<FaTimes/>
 				</CancelButton>
 				<StepsWrapper
 					onKeyDown={(e) => preventTab(e)}
@@ -223,9 +220,9 @@ export  function EditResume() {
 						marginLeft: `-${100 * currentStep}%`,
 					}}
 				>
-					{STEPS.map(({ id, Component }) => (
+					{STEPS.map(({id, Component}) => (
 						<StepContainer key={id}>
-							<Component />
+							<Component/>
 						</StepContainer>
 					))}
 				</StepsWrapper>

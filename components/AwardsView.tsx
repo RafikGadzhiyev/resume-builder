@@ -1,4 +1,4 @@
-import React from "react";
+import {FC} from "react";
 import styled from "@emotion/styled";
 import { IDescription } from "../interfaces/steps.interface";
 import { Column, Row } from "../elements/Layouts";
@@ -16,7 +16,7 @@ const Award = styled(Column)`
   margin-block: 1rem 0.5rem;
 `;
 
-export const AwardsView: React.FC<IProps> = ({ awards }) => {
+export const AwardsView: FC<IProps> = ({ awards }) => {
   return (
     <Container>
       <h2>Awards</h2>

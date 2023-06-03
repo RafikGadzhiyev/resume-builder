@@ -75,35 +75,12 @@ export interface IResume {
   works: IWork[];
 }
 
-export interface IData {
-  title: string;
-  user_id: string;
-  name: string;
-  surname: string;
-  age: number;
-  gender: Genders;
-  phone: string;
-  location: string;
-  email: string;
-  skills: ISkill[];
-  bio: string;
-  languages: ILanguage[];
-  hobby: IHobby;
-  education: (Exclude<IEducation, "year"> & {
-    education_year: {
-      start: number;
-      end: number;
-    };
-  })[];
-  work: (Exclude<IWork, "achievements"> & { achievements: string[] })[];
-}
-
 export interface IInitActionPayload {
   full_name: string;
   email: string;
 }
 
-export interface RequestData {
+export interface RequestData{
   title: string;
   user_id: string;
   name: string;

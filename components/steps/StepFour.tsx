@@ -4,19 +4,13 @@ import { v4 as uuid4 } from "uuid";
 import { IDescription } from "../../interfaces/steps.interface";
 import { Description } from "../Description";
 import { updateResume } from "../../state/slices/resume.slice";
-import {
-  DescriptionContainer,
-  DescriptionList,
-  StepTitle,
-} from "../../elements/StepsUI";
+import { DescriptionContainer, DescriptionList, StepTitle } from "../../elements/StepsUI";
 import { AddDescriptionButton } from "../../elements/Buttons";
 import type { AppDispatch, RootState } from "../../state/store";
 
 export const StepFour = () => {
   const dispatch: AppDispatch = useDispatch();
-  const resume = useSelector(
-    (store: RootState) => store.resumeReducer.currentResume
-  );
+  const resume = useSelector((store: RootState) => store.resumeReducer.currentResume);
   const { awards } = resume;
 
   const addNewAward = () => {

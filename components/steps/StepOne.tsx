@@ -1,4 +1,4 @@
-import React from "react";
+import {useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Inputs } from "./StepOneInputs";
 import { Genders } from "./Gender";
@@ -17,10 +17,10 @@ export const StepOne = () => {
     (store: RootState) => store.resumeReducer.currentResume
   );
   const dispatch = useDispatch();
-  const [bio, setBio] = React.useState("");
+  const [bio, setBio] = useState("");
   const debouncedBio = useDebounce(bio, 500, true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       updateResume({
         ...resume,

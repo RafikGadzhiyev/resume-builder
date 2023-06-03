@@ -1,4 +1,4 @@
-import React from "react";
+import {FormEvent, FC} from 'react';
 import styled from "@emotion/styled";
 
 const VerificationFieldsContainer = styled.div`
@@ -55,10 +55,10 @@ const VerificationField = styled.input`
 `;
 
 interface IBlock {
-  changeHandler: (e: React.FormEvent<HTMLInputElement>) => void;
+  changeHandler: (e: FormEvent<HTMLInputElement>) => void;
 }
 
-export const VerificationCodeBlock: React.FC<IBlock> = ({ changeHandler }) => {
+export const VerificationCodeBlock: FC<IBlock> = ({ changeHandler }) => {
   return (
     <VerificationFieldsContainer>
       <VerificationField

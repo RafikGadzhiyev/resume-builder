@@ -1,24 +1,23 @@
-import React from "react";
+import {FC, PropsWithChildren, SyntheticEvent, useEffect, useRef, useState} from "react";
 import { useSelector } from "react-redux";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import { RootState } from "../state/store";
 
-interface IErrorProps extends React.PropsWithChildren {
+interface IErrorProps extends PropsWithChildren {
   error: null | string;
 }
 
-export const ErrorSnackBar: React.FC<IErrorProps> = ({ error }) => {
-  // const error = useSelector((store: RootState) => store.authReducer.error)
-  const [isOpen, setIsOpen] = React.useState<boolean>(error !== null);
+export const ErrorSnackBar: FC<IErrorProps> = ({ error }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(error !== null);
 
-  const clickHandler = (e?: React.SyntheticEvent | Event, reason?: string) => {
+  const clickHandler = (e?: SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") return;
 
     setIsOpen(() => false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsOpen(() => error !== null);
   }, [error]);
 
@@ -46,26 +45,26 @@ export const ErrorSnackBar: React.FC<IErrorProps> = ({ error }) => {
   );
 };
 
-interface ISuccessProps extends React.PropsWithChildren {
+interface ISuccessProps extends PropsWithChildren {
   message: string;
 }
 
-export const SuccessSnackBar: React.FC<ISuccessProps> = ({ message }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
+export const SuccessSnackBar: FC<ISuccessProps> = ({ message }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const resume = useSelector(
     (store: RootState) => store.resumeReducer.currentResume
   );
-  const firstRender = React.useRef(1);
+  const firstRender = useRef(1);
 
   const handleClose = (
-    event?: React.SyntheticEvent | Event,
+    event?: SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === "clickaway") return;
     setIsOpen(() => false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (firstRender.current > 0) {
       firstRender.current--;
     } else {

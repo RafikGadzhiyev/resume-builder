@@ -1,7 +1,7 @@
-import React from "react";
+import {KeyboardEvent, useEffect, useState} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { Tooltip } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "../hooks/useDebounce";
 import { RootState } from "../state/store";
 import { updateResume } from "../state/slices/resume.slice";
@@ -27,22 +27,22 @@ export const ResumeTitle = () => {
   const resume = useSelector(
     (store: RootState) => store.resumeReducer.currentResume
   );
-  const [title, setTitle] = React.useState(resume.title);
-  const [editModeEnabled, setEditModeEnabled] = React.useState(false);
+  const [title, setTitle] = useState(resume.title);
+  const [editModeEnabled, setEditModeEnabled] = useState(false);
 
   const debouncedTitleValue = useDebounce(title, 500, true);
-  const keyHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const keyHandler = (e: KeyboardEvent<HTMLInputElement>) => {
     const { key } = e;
     if (key === "Enter") {
       setEditModeEnabled(() => false);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTitle(() => resume.title);
   }, [resume.title]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       updateResume({
         ...resume,

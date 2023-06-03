@@ -1,4 +1,4 @@
-import React from "react";
+import {FC} from "react";
 import { Degrees } from "../types";
 import styled from "@emotion/styled";
 import { Column, Row } from "../elements/Layouts";
@@ -31,7 +31,7 @@ interface IProps {
   education_end: number;
 }
 
-export const EducationExperience: React.FC<IProps> = ({
+export const EducationExperience: FC<IProps> = ({
   education_start,
   education_end,
   degree,

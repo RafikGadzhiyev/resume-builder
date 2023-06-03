@@ -14,6 +14,7 @@ const DynamicGlobalStyles = (styles: any) => css`
   @font-face {
     font-family: "Manrope";
   }
+
   *,
   *::before,
   *::after {
@@ -31,11 +32,13 @@ const DynamicGlobalStyles = (styles: any) => css`
     background-color: ${styles.textColor +
     ConvertOpacityToHEXRepresentation(60)};
   }
+
   *::-webkit-scrollbar-thumb:hover {
     border-radius: 5px;
     background-color: ${styles.textColor +
     ConvertOpacityToHEXRepresentation(40)};
   }
+
   *::-webkit-scrollbar-thumb:active {
     border-radius: 5px;
     background-color: ${styles.textColor +
@@ -66,7 +69,6 @@ export default function RouteLayout({
   const MUITheme = createTheme();
   const theme = useSelector((store: RootState) => store.themeReducer.theme);
 
-  // TODO TOTALLY FIX ROUTING
   const pathname = usePathname();
   const router = useRouter();
   const { isTokenExist, user } = useSelector(

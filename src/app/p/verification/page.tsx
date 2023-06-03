@@ -1,20 +1,20 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import styled from "@emotion/styled";
-import { FormTypeIconContainer } from "../../../../elements/FormUI";
-import { useTimer } from "../../../../hooks/useTimer";
+import {FormTypeIconContainer} from "../../../../elements/FormUI";
+import {useTimer} from "../../../../hooks/useTimer";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../../state/store";
-import { SERVER_BASE_URL } from "../../../../consts/request_data";
-import { ErrorSnackBar } from "../../../../components/SnackBars";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../../../state/store";
+import {SERVER_BASE_URL} from "../../../../consts/request_data";
+import {ErrorSnackBar} from "../../../../components/SnackBars";
 import EnvelopIcon from "../../../../assets/icons/envelop.svg";
-import { VerificationCodeBlock } from "../../../../components/VerificationCodeBlock";
-import { Timer } from "../../../../components/Timer";
+import {VerificationCodeBlock} from "../../../../components/VerificationCodeBlock";
+import {Timer} from "../../../../components/Timer";
 import RepeatIcon from "../../../../assets/icons/repeat.svg";
-import { BaseButton } from "../../../../elements/Buttons";
-import { CheckVerificationCode } from "../../../../state/reducers/auth.reducer";
-import { ResetUser } from "../../../../state/slices/auth.slice";
+import {BaseButton} from "../../../../elements/Buttons";
+import {CheckVerificationCode} from "../../../../state/reducers/auth.reducer";
+import {ResetUser} from "../../../../state/slices/auth.slice";
 import Link from "next/link";
 
 const EmailText = styled.span`
@@ -32,7 +32,7 @@ const VerificationContainer = styled.div`
 
 const VerificationNotification = styled(FormTypeIconContainer)`
   transform: rotate(-3.61deg);
-  
+
   @media screen and (max-width: 650px) {
     font-size: 15px;
     height: auto;
@@ -40,7 +40,7 @@ const VerificationNotification = styled(FormTypeIconContainer)`
   @media screen and (max-width: 400px) {
     font-size: 10px;
   }
-  
+
 `;
 
 const VerificationForm = styled.form`
@@ -101,6 +101,7 @@ const BackToLogin = styled(Link)`
 
   &:hover {
     text-shadow: 0 0 10px #0fff13;
+
     &::before {
       width: 100%;
       box-shadow: 0 0 10px #0fff13;
@@ -109,120 +110,120 @@ const BackToLogin = styled(Link)`
 `;
 
 export default function VerificationCode() {
-  const { time, isWorking, resetTimer } = useTimer(60 * 1000, 1000);
-  const [isFull, setIsFull] = React.useState<boolean>(false);
-  const queries = useSearchParams();
-  const router = useRouter();
-  const userData = useSelector((store: RootState) => store.authReducer.user);
-  const error = useSelector((store: RootState) => store.authReducer.error);
-  const oneTime = React.useRef(1);
-  const cellsForm = React.useRef<HTMLFormElement>(null);
-  const totalInputs = React.useRef<number>(-1);
-  const code = React.useRef<string>("");
+	const {time, isWorking, resetTimer} = useTimer(60 * 1000, 1000);
+	const [isFull, setIsFull] = React.useState<boolean>(false);
+	const queries = useSearchParams();
+	const router = useRouter();
+	const userData = useSelector((store: RootState) => store.authReducer.user);
+	const error = useSelector((store: RootState) => store.authReducer.error);
+	const oneTime = React.useRef(1);
+	const cellsForm = React.useRef<HTMLFormElement>(null);
+	const totalInputs = React.useRef<number>(-1);
+	const code = React.useRef<string>("");
 
-  const dispatch = useDispatch<AppDispatch>();
+	const dispatch = useDispatch<AppDispatch>();
 
-  const changeHandler = (e: React.FormEvent<HTMLInputElement>) => {
-    code.current = "";
-    let element = e.target as HTMLInputElement;
-    let cellIndex = 1;
-    if (element.value.length > 0) {
-      if (cellsForm.current) {
-        while (cellIndex <= totalInputs.current) {
-          if (cellsForm.current[`cell-${cellIndex}`].value) {
-            code.current += cellsForm.current[`cell-${cellIndex}`].value;
-            cellIndex++;
-          } else break;
-        }
-        if (cellIndex > totalInputs.current) {
-          setIsFull(() => true);
-          return;
-        }
+	const changeHandler = (e: React.FormEvent<HTMLInputElement>) => {
+		code.current = "";
+		let element = e.target as HTMLInputElement;
+		let cellIndex = 1;
+		if (element.value.length > 0) {
+			if (cellsForm.current) {
+				while (cellIndex <= totalInputs.current) {
+					if (cellsForm.current[`cell-${cellIndex}`].value) {
+						code.current += cellsForm.current[`cell-${cellIndex}`].value;
+						cellIndex++;
+					} else break;
+				}
+				if (cellIndex > totalInputs.current) {
+					setIsFull(() => true);
+					return;
+				}
 
-        cellsForm.current[`cell-${cellIndex}`].focus();
-      }
-    }
-    if (isFull) {
-      setIsFull(() => false);
-    }
-  };
+				cellsForm.current[`cell-${cellIndex}`].focus();
+			}
+		}
+		if (isFull) {
+			setIsFull(() => false);
+		}
+	};
 
-  const resendCode = () => {
-    resetTimer();
-    // TODO: snackbar
-    fetch(
-      `${SERVER_BASE_URL}/verification/send_code?user_id=${queries.get(
-        "user_id"
-      )}`
-    );
-    if (cellsForm.current) {
-      for (let i = 1; i <= totalInputs.current; ++i) {
-        cellsForm.current[`cell-${i}`].value = "";
-      }
-    }
-  };
+	const resendCode = () => {
+		resetTimer(true);
+		// TODO: snackbar
+		fetch(
+			`${SERVER_BASE_URL}/verification/send_code?user_id=${queries.get(
+				"user_id"
+			)}`
+		);
+		if (cellsForm.current) {
+			for (let i = 1; i <= totalInputs.current; ++i) {
+				cellsForm.current[`cell-${i}`].value = "";
+			}
+		}
+	};
 
-  React.useEffect(() => {
-    if (cellsForm.current && totalInputs.current === -1) {
-      totalInputs.current = 0;
-      for (let element of cellsForm.current.elements as any) {
-        if (element.tagName === "INPUT") totalInputs.current++;
-      }
-    }
-    if (queries.get("user_id") && oneTime.current) {
-      fetch(
-        `${SERVER_BASE_URL}/verification/send_code?user_id=${queries.get(
-          "user_id"
-        )}`
-      );
-      oneTime.current--;
-    }
-  }, [queries.get("user_id")]);
+	React.useEffect(() => {
+		if (cellsForm.current && totalInputs.current === -1) {
+			totalInputs.current = 0;
+			for (let element of cellsForm.current.elements as any) {
+				if (element.tagName === "INPUT") totalInputs.current++;
+			}
+		}
+		if (queries.get("user_id") && oneTime.current) {
+			fetch(
+				`${SERVER_BASE_URL}/verification/send_code?user_id=${queries.get(
+					"user_id"
+				)}`
+			);
+			oneTime.current--;
+		}
+	}, [queries.get("user_id")]);
 
-  return (
-    <VerificationContainer>
-      <ErrorSnackBar error={error} />
-      <VerificationNotification>
-        <EmailIcon src={EnvelopIcon.src} alt="Envelop icon" />
-        <span>
+	return (
+		<VerificationContainer>
+			<ErrorSnackBar error={error}/>
+			<VerificationNotification>
+				<EmailIcon src={EnvelopIcon.src} alt="Envelop icon"/>
+				<span>
           We have sent to your email <EmailText>{userData?.email}</EmailText> a
           verification code
         </span>
-      </VerificationNotification>
-      <VerificationForm ref={cellsForm}>
-        <VerificationCodeBlock changeHandler={changeHandler} />
-        <ResendContainer>
-          <Timer time={time} />
-          <ResendButton
-            disabled={isWorking}
-            type="button"
-            onClick={() => resendCode()}
-          >
-            Resend code <img src={RepeatIcon.src} alt="Repeat icon" />
-          </ResendButton>
-        </ResendContainer>
-        <BaseButton
-          type="button"
-          disabled={!isFull}
-          onClick={() => {
-            dispatch(
-              CheckVerificationCode({
-                user_id: userData?.id || "",
-                code: code.current,
-              })
-            ).then(
-              (response) =>
-                response.meta.requestStatus === "fulfilled" &&
-                router.push("/p/profile")
-            );
-          }}
-        >
-          Check code
-        </BaseButton>
-        <BackToLogin href="/auth" onClick={() => dispatch(ResetUser())}>
-          Login via another email
-        </BackToLogin>
-      </VerificationForm>
-    </VerificationContainer>
-  );
+			</VerificationNotification>
+			<VerificationForm ref={cellsForm}>
+				<VerificationCodeBlock changeHandler={changeHandler}/>
+				<ResendContainer>
+					<Timer time={time}/>
+					<ResendButton
+						disabled={isWorking}
+						type="button"
+						onClick={() => resendCode()}
+					>
+						Resend code <img src={RepeatIcon.src} alt="Repeat icon"/>
+					</ResendButton>
+				</ResendContainer>
+				<BaseButton
+					type="button"
+					disabled={!isFull}
+					onClick={() => {
+						dispatch(
+							CheckVerificationCode({
+								user_id: userData?.id || "",
+								code: code.current,
+							})
+						).then(
+							(response) =>
+								response.meta.requestStatus === "fulfilled" &&
+								router.push("/p/profile")
+						);
+					}}
+				>
+					Check code
+				</BaseButton>
+				<BackToLogin href="/auth" onClick={() => dispatch(ResetUser())}>
+					Login via another email
+				</BackToLogin>
+			</VerificationForm>
+		</VerificationContainer>
+	);
 }

@@ -7,13 +7,10 @@ import {
   PDFViewer,
   Text,
   View,
-  Font,
 } from "@react-pdf/renderer";
 import styled from "@emotion/styled";
 import {
-  IEducation,
   IResume,
-  IWork,
 } from "../../../../../../../interfaces/resume.interface";
 import { Loading } from "../../../../../../../components/Loading";
 import { SERVER_BASE_URL } from "../../../../../../../consts/request_data";
@@ -25,11 +22,9 @@ import { SVG_PDF } from "../../../../../../../components/PDFParts/SVG_PDF";
 import { SVG_AS_STRING } from "../../../../../../../consts/SVG";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../../../../state/store";
-import moment from "moment";
 import { WorksPDF } from "../../../../../../../components/PDFParts/WorksPDF";
 import { EducationsPDF } from "../../../../../../../components/PDFParts/EducationsPDF";
 import { useParams, useSearchParams } from "next/navigation";
-import { ReadAllUserResumes } from "../../../../../../../state/reducers/resume.reducer";
 
 const PDFContainer = styled.div`
   display: flex;
@@ -70,6 +65,7 @@ export default function PDFView() {
       }
     }
   }, [resumes, resume_id]);
+
   if (resume_id === undefined)
     return <h1>Resume is not defined! Please, try to open another resume!</h1>;
   if (resume === null) return <Loading>Parsing resume</Loading>;

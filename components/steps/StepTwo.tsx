@@ -1,7 +1,6 @@
-import React from "react";
+import {useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "@emotion/styled";
-import { motion } from "framer-motion";
 import {
   FaLinkedinIn,
   FaInstagram,
@@ -44,10 +43,10 @@ export const StepTwo = () => {
     (store: RootState) => store.resumeReducer.currentResume
   );
   const dispatch = useDispatch<AppDispatch>();
-  const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [location, setLocation] = React.useState("");
-  const [socials, setSocials] = React.useState<
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [socials, setSocials] = useState<
     Record<Exclude<Socials, "twitter" | "facebook">, string>
   >({
     instagram: "",
@@ -68,7 +67,7 @@ export const StepTwo = () => {
     useDebounce(location, 500, true),
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     setEmail(() => resumeData.personalData.email);
     setPhone(() => resumeData.personalData.phoneNumber);
     setLocation(() => resumeData.extraData.location);
@@ -78,7 +77,7 @@ export const StepTwo = () => {
     resumeData.extraData.location,
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       updateResume({
         ...resumeData,

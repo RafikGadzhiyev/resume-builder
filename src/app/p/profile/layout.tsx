@@ -1,13 +1,9 @@
-import React from "react";
+import {ReactNode} from "react";
 
 export const metadata = {
-  title: "Profile",
+	title: "Profile",
 };
 
-export default function ProfileLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <>{children}</>;
+export default function ProfileLayout({children,}: { children: ReactNode; }) {
+	return <>{children}</>;
 }

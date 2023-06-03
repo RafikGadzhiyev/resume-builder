@@ -1,4 +1,4 @@
-import React from "react";
+import {FC, useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
@@ -63,7 +63,7 @@ interface IData {
   description: string;
 }
 
-export const Description: React.FC<IProps> = ({
+export const Description: FC<IProps> = ({
   index,
   itemId,
   descriptionType,
@@ -75,7 +75,7 @@ export const Description: React.FC<IProps> = ({
   const TYPE: "awards" | "certificates" =
     descriptionType === "award" ? "awards" : "certificates";
   const description = resume[TYPE];
-  const [data, setData] = React.useState<IData>({
+  const [data, setData] = useState<IData>({
     title: "",
     from: "",
     year: "",
@@ -103,7 +103,7 @@ export const Description: React.FC<IProps> = ({
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       updateResume({
         ...resume,

@@ -1,8 +1,8 @@
-import React from "react";
+import {FC, useEffect, useRef, useState} from "react";
+import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { AnimatePresence, motion } from "framer-motion";
 import { useFocus } from "../hooks/useFocus";
-import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 import { IResume } from "../interfaces/resume.interface";
 import { CompareTwoDates } from "../utils/Date";
@@ -61,16 +61,16 @@ interface IProps {
   reset: () => void;
   updateState: (newData: IResume[]) => void;
 }
-export const Filter: React.FC<IProps> = ({ sort, updateState, reset }) => {
-  const [currentSort, setCurrentSort] = React.useState("Select sort");
+export const Filter: FC<IProps> = ({ sort, updateState, reset }) => {
+  const [currentSort, setCurrentSort] = useState("Select sort");
   const resumes = useSelector(
     (store: RootState) => store.resumeReducer.resumes
   );
-  const SelectRef = React.useRef<HTMLButtonElement>(null);
+  const SelectRef = useRef<HTMLButtonElement>(null);
   const currentFocusResult = useFocus(SelectRef);
 
   const applySort = (sortType: string) => {
-    let sortCallback = (a: IResume, b: IResume) => false;
+    let sortCallback = (__: IResume, _: IResume) => false;
     switch (sortType) {
       case "select_sort":
         reset();
@@ -91,7 +91,7 @@ export const Filter: React.FC<IProps> = ({ sort, updateState, reset }) => {
     sort(sortCallback);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateState(resumes);
     setCurrentSort(() => "Select sort");
   }, [resumes]);

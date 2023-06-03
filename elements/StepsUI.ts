@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Radio } from "@mui/material";
-import { motion } from "framer-motion";
+import {Radio} from "@mui/material";
+import {motion} from "framer-motion";
 
 export const StepContainer = styled(motion.div)`
   display: flex;
@@ -16,11 +16,11 @@ export const StepContainer = styled(motion.div)`
 
 export const StepTitle = styled.h4`
   text-align: center;
-  
-  @media screen and (max-width: 480px){
-	font-size: 15px;
+
+  @media screen and (max-width: 480px) {
+    font-size: 15px;
   }
-  
+
 `;
 
 export const StepDescription = styled.textarea`

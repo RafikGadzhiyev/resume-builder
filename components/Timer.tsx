@@ -1,4 +1,4 @@
-import React from "react";
+import {FC} from 'react';
 import styled from "@emotion/styled";
 import { ConvertToMinutes, ConvertToSeconds } from "../utils/convert";
 
@@ -14,7 +14,7 @@ const TimerContainer = styled.div`
 interface IProps {
   time: number; // Time in seconds
 }
-export const Timer: React.FC<IProps> = ({ time }) => {
+export const Timer: FC<IProps> = ({ time }) => {
   return (
     <TimerContainer>
       <span>{ConvertToMinutes(time / 1000)}</span>:

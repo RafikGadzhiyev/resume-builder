@@ -1,11 +1,12 @@
 "use client";
+import {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 import TestProfileImage from "./../../../../assets/icons/profile_test_image.svg";
 import { BaseButton } from "../../../../elements/Buttons";
 import { ConvertOpacityToHEXRepresentation } from "../../../../utils/convert";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../state/store";
-import { useSort } from "../../../../hooks/useFilter";
+import { useSort } from "../../../../hooks/useSort";
 import { IResume } from "../../../../interfaces/resume.interface";
 import { useRouter } from "next/navigation";
 import { useFocus } from "../../../../hooks/useFocus";
@@ -14,12 +15,12 @@ import {
   ErrorSnackBar,
   SuccessSnackBar,
 } from "../../../../components/SnackBars";
-import React from "react";
 import { AnimatePresence } from "framer-motion";
 import { Palette } from "../../../../components/Palette";
 import { Loading } from "../../../../components/Loading";
 import { Filter } from "../../../../components/Filter";
 import { UserResume } from "../../../../components/UserResume";
+import {useCallbackOnce} from "../../../../hooks/useCallbackOnce";
 
 const Container = styled.div`
   --headerHeight: 4.5rem;
@@ -147,27 +148,27 @@ const WelcomeText = styled.span`
   }
 `;
 export default function Profile() {
-  const [successState, setSuccessState] = React.useState<null | string>(null);
-  const [errorState, setErrorState] = React.useState<null | string>(null);
+
+  const [successState, setSuccessState] = useState<null | string>(null);
+  const [errorState, setErrorState] = useState<null | string>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { resumes, isLoading } = useSelector(
-    (store: RootState) => store.resumeReducer
-  );
+  const { resumes, isLoading } = useSelector((store: RootState) => store.resumeReducer);
   const { state, sort, reset, updateState } = useSort<IResume>(resumes);
   const user = useSelector((store: RootState) => store.authReducer.user);
   const router = useRouter();
-  const one = React.useRef(1);
-  const PaletteRef = React.useRef<HTMLButtonElement | null>(null);
+  const one = useRef(1);
+  const PaletteRef = useRef<HTMLButtonElement | null>(null);
   const currentPaletteFocus = useFocus(PaletteRef);
 
-  React.useEffect(() => {
-    if (one.current && user) {
-      one.current--;
-      dispatch(ReadAllUserResumes(user.id))
-        .then(() => setSuccessState(() => "Successful parsed all resumes!"))
-        .catch(() =>
+  const [_, callReadResume] = useCallbackOnce(() => dispatch(ReadAllUserResumes(user?.id || ''))
+      .then(() => setSuccessState(() => "Successful parsed all resumes!"))
+      .catch(() =>
           setErrorState(() => "Something was wrong while parsing all records!")
-        );
+      ));
+
+  useEffect(() => {
+    if (user) {
+      callReadResume();
     }
   }, [user, dispatch]);
 

@@ -1,4 +1,4 @@
-import React from "react";
+import {FC} from 'react';
 import styled from "@emotion/styled";
 import moment from "moment/moment";
 import { Column, Row } from "../elements/Layouts";
@@ -30,7 +30,7 @@ interface IProps {
   work_end: null | string;
   location: string;
 }
-export const WorkExperience: React.FC<IProps> = ({
+export const WorkExperience: FC<IProps> = ({
   company,
   work_end,
   work_start,

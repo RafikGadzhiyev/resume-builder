@@ -9,9 +9,7 @@ import { DescriptionContainer, StepTitle } from "../../elements/StepsUI";
 
 export const StepNine = () => {
   const dispatch = useDispatch();
-  const resume = useSelector(
-    (store: RootState) => store.resumeReducer.currentResume
-  );
+  const resume = useSelector((store: RootState) => store.resumeReducer.currentResume);
 
   const createNewWork = () => {
     dispatch(

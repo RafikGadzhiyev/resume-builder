@@ -1,4 +1,4 @@
-import React from "react";
+import {FC, PropsWithChildren} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setStep } from "../../state/slices/resume.slice";
 import { Container } from "../../elements/IndicatorUI";
@@ -6,12 +6,12 @@ import { IndicatorStyles } from "../../variants/indicator.variants";
 import type { AppDispatch, RootState } from "../../state/store";
 import type { IndicatorStates } from "../../types";
 
-interface IProps extends React.PropsWithChildren {
+interface IProps extends PropsWithChildren {
   step: number;
   state: IndicatorStates;
 }
 
-export const IndicatorBlock: React.FC<IProps> = ({ step, state }) => {
+export const IndicatorBlock: FC<IProps> = ({ step, state }) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentStep = useSelector(
     (store: RootState) => store.resumeReducer.currentStep

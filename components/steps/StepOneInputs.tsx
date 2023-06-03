@@ -1,4 +1,4 @@
-import React from "react";
+import {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {useDebounce} from "../../hooks/useDebounce";
 import styled from "@emotion/styled";
@@ -55,10 +55,10 @@ export const Inputs = () => {
 		(store: RootState) => store.resumeReducer.currentResume
 	);
 	const dispatch = useDispatch<AppDispatch>();
-	const [inputErrors, setInputErrors] = React.useState([false, false, false]);
-	const [nameInput, setNameInput] = React.useState("");
-	const [lastName, setLastName] = React.useState("");
-	const [age, setAge] = React.useState(0);
+	const [inputErrors, setInputErrors] = useState([false, false, false]);
+	const [nameInput, setNameInput] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [age, setAge] = useState(0);
 
 	const debouncedNameValue = useDebounce(nameInput, 500, false);
 	const debouncedLastnameValue = useDebounce(lastName, 500, false);
@@ -85,12 +85,12 @@ export const Inputs = () => {
 		setInputErrors(() => [...errors]);
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setNameInput(() => resumeData.personalData.name);
 		setLastName(() => resumeData.personalData.surname);
 	}, [resumeData.personalData.name, resumeData.personalData.surname]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		let timer: ReturnType<typeof setTimeout>;
 		if (inputErrors.some((element) => element)) {
 			timer = setTimeout(() => {
@@ -100,7 +100,7 @@ export const Inputs = () => {
 		return () => clearTimeout(timer);
 	}, [inputErrors]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		dispatch(
 			updateResume({
 				...resumeData,

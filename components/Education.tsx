@@ -1,4 +1,4 @@
-import React from "react";
+import {FC, PropsWithChildren, useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
@@ -8,7 +8,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { updateResume } from "../state/slices/resume.slice";
 import { RootState } from "../state/store";
 import { FaTimes } from "react-icons/fa";
-import { StepRadio, StepTitle } from "../elements/StepsUI";
+import { StepRadio } from "../elements/StepsUI";
 import { Input } from "../elements/Inputs";
 import { DeleteDescriptionButton } from "../elements/Buttons";
 import type { Degrees } from "../types";
@@ -61,7 +61,7 @@ const DEGREES: { id: string; degree: Degrees }[] = [
   },
 ];
 
-interface IProps extends React.PropsWithChildren {
+interface IProps extends PropsWithChildren {
   university: string;
   index: number;
   faculty: string;
@@ -70,7 +70,7 @@ interface IProps extends React.PropsWithChildren {
   degree: Degrees;
 }
 
-export const Education: React.FC<IProps> = ({
+export const Education: FC<IProps> = ({
   university,
   degree,
   endYear,
@@ -82,11 +82,11 @@ export const Education: React.FC<IProps> = ({
   const resume = useSelector(
     (store: RootState) => store.resumeReducer.currentResume
   );
-  const [uni, setUni] = React.useState(university);
-  const [facultyData, setFacultyData] = React.useState(faculty);
-  const [sYear, setSYear] = React.useState(startYear);
-  const [eYear, setEYear] = React.useState(endYear);
-  const [deg, setDeg] = React.useState<Degrees>(degree);
+  const [uni, setUni] = useState(university);
+  const [facultyData, setFacultyData] = useState(faculty);
+  const [sYear, setSYear] = useState(startYear);
+  const [eYear, setEYear] = useState(endYear);
+  const [deg, setDeg] = useState<Degrees>(degree);
 
   const [debouncedUni, debouncedFaculty, debouncedSYear, debouncedEYear] = [
     useDebounce(uni, 500, true),
@@ -104,7 +104,7 @@ export const Education: React.FC<IProps> = ({
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       updateResume({
         ...resume,

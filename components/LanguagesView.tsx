@@ -1,6 +1,6 @@
-import { ILanguage } from "../interfaces/resume.interface";
-import React from "react";
+import {FC, Fragment} from "react";
 import styled from "@emotion/styled";
+import { ILanguage } from "../interfaces/resume.interface";
 import { Column } from "../elements/Layouts";
 import { ExtraText } from "../elements/Typography";
 
@@ -17,18 +17,18 @@ const BoldText = styled.b`
 interface IProps {
   languages: ILanguage[];
 }
-export const LanguagesView: React.FC<IProps> = ({ languages }) => {
+export const LanguagesView: FC<IProps> = ({ languages }) => {
   return (
     <Container>
       <h2>Languages</h2>
       <div>
         {languages.map((language: ILanguage) => (
-          <React.Fragment key={language.id}>
+          <Fragment key={language.id}>
             <Language>{language.language}</Language>
             <BoldText>
               <ExtraText>{language.level}</ExtraText>
             </BoldText>
-          </React.Fragment>
+          </Fragment>
         ))}
       </div>
     </Container>
