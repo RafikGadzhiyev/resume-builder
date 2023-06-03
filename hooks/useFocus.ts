@@ -14,12 +14,14 @@ export const useFocus = (reference: MutableRefObject<HTMLButtonElement | null>) 
 	useEffect(() => {
 		if (reference.current) {
 			reference.current.onfocus = () => FocusHandler();
+			reference.current.ontouchstart = () => FocusHandler();
 			reference.current.onblur = () => BlurHandler();
 		}
 
 		return () => {
 			if (reference.current) {
 				reference.current.onfocus = () => {};
+				reference.current.onblur = () => {};
 				reference.current.ontouchstart = () => {};
 			}
 		};
