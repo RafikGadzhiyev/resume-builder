@@ -14,7 +14,9 @@ export const useFocus = (reference: MutableRefObject<HTMLButtonElement | null>) 
 	useEffect(() => {
 		if (reference.current) {
 			reference.current.onfocus = () => FocusHandler();
-			reference.current.ontouchstart = () => FocusHandler();
+			reference.current.ontouchstart = () => {
+				reference.current?.focus();
+			};
 			reference.current.onblur = () => BlurHandler();
 		}
 
